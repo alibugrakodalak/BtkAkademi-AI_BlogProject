@@ -1,0 +1,441 @@
+﻿@model List<ResultCommentDto>
+
+@{
+    ViewData["Title"] = "CommentList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .comment-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .card-header-custom {
+        background: #fff;
+        border-bottom: 1px solid #edf2f7;
+        padding: 25px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #344767;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box i {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-box input {
+            height: 48px;
+            border-radius: 12px;
+            padding-left: 45px;
+            border: 1px solid #dee2e6;
+        }
+
+            .search-box input:focus {
+                box-shadow: none;
+                border-color: #059669;
+            }
+
+    .modern-table thead {
+        background: #f8fafc;
+    }
+
+        .modern-table thead th {
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 18px;
+        }
+
+    .modern-table tbody td {
+        padding: 18px;
+        border-color: #edf2f7;
+        vertical-align: middle;
+    }
+
+    .modern-table tbody tr {
+        transition: all .25s ease;
+    }
+
+        .modern-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .comment-id {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .avatar-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#10b981,#059669);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .article-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #eef4ff;
+        color: #0d6efd;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f8fafc;
+        color: #64748b;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .status-approved {
+        background: #dcfce7;
+        color: #166534;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .rating-stars {
+        display: flex;
+        gap: 3px;
+        color: #f59e0b;
+        font-size: 17px;
+    }
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: .25s;
+        border: none;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-view {
+        background: rgba(13,110,253,.12);
+        color: #0d6efd;
+    }
+
+    .comment-modal-text {
+        line-height: 1.9;
+        font-size: 15px;
+        color: #475569;
+        text-align: left;
+        white-space: pre-wrap;
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+
+        <div class="breadcrumb-title pe-3 fw-bold">
+            Yorumlar
+        </div>
+
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Yorum Listesi
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="card comment-card">
+
+        <div class="card-header-custom">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-6">
+
+                    <h4 class="page-title">
+                        <i class="bi bi-chat-square-text-fill text-success me-2"></i>
+                        Yorum Yönetimi
+                    </h4>
+
+                </div>
+
+                <div class="col-lg-4 ms-auto mt-3 mt-lg-0">
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               id="searchInput"
+                               class="form-control"
+                               placeholder="Kullanıcı veya makale ara..." />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table modern-table mb-0"
+                       id="commentTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Kullanıcı</th>
+                            <th>Makale</th>
+                            <th>Puan</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                            <th class="text-center">Detay</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <span class="comment-id">
+                                        #@item.CommentId
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex align-items-center gap-3">
+
+                                        <div class="avatar-circle">
+                                            @(string.IsNullOrEmpty(item.Name)
+                                                ? "U"
+                                                : item.Name.Substring(0, 1).ToUpper())
+                                        </div>
+
+                                        <div>
+
+                                            <div class="fw-semibold">
+                                                @item.Name @item.Surname
+                                            </div>
+
+                                            <small class="text-muted">
+                                                Kullanıcı
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="article-badge">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        @item.Title
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    <div class="rating-stars">
+
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (item.Rating >= i)
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            }
+                                            else if (item.Rating >= i - 0.5m)
+                                            {
+                                                <i class="bi bi-star-half"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="date-badge">
+
+                                        <i class="bi bi-calendar-event"></i>
+
+                                        @item.CommentDate.ToString(
+                                                 "dd MMM yyyy",
+                                                 new System.Globalization.CultureInfo("tr-TR"))
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    @if (item.IsConfirm)
+                                    {
+                                        <span class="status-approved">
+                                            <i class="bi bi-check-circle-fill me-1"></i>
+                                            Onaylandı
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-pending">
+                                            <i class="bi bi-hourglass-split me-1"></i>
+                                            Bekliyor
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <button type="button"
+                                            class="action-btn btn-view"
+                                            onclick='showComment(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(item.CommentDetail)))'>
+
+                                        <i class="bi bi-eye-fill"></i>
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    document.getElementById("searchInput")
+    .addEventListener("keyup", function () {
+
+    let value = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#commentTable tbody tr");
+
+    rows.forEach(function (row) {
+
+    let text = row.innerText.toLowerCase();
+
+    row.style.display =
+    text.includes(value) ? "" : "none";
+    });
+
+    });
+
+    function showComment(commentText) {
+
+    Swal.fire({
+
+    title: `
+    <div class="d-flex align-items-center justify-content-center gap-2">
+    <i class="bi bi-chat-square-text-fill text-success"></i>
+    <span>Yorum Detayı</span>
+    </div>
+    `,
+
+    html: `
+    <div class="comment-modal-text">
+    ${commentText}
+    </div>
+    `,
+
+    width: 750,
+
+    confirmButtonText: 'Kapat',
+
+    confirmButtonColor: '#059669',
+
+    customClass: {
+    popup: 'rounded-4'
+    }
+
+    });
+    }
+
+</script>

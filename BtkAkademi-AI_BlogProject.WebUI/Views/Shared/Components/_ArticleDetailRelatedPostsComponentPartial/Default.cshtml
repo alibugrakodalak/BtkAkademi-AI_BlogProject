@@ -1,0 +1,28 @@
+﻿@model List<Result3ArticlesByCategoryIdDto>
+
+<div class="back-blog-related">
+    <div class="container">
+        <div class="back-title back-small-title">
+            <h2>İlgili Gönderiler</h2>
+        </div>
+        <ul id="back-blog-slider" class="owl-carousel owl-theme">
+            @foreach(var item in Model)
+            {
+                <li class="item">
+                    <div class="back-inner">
+                        <div class="back-blog-image">
+                            <a href="blog-details.html"><img src="@item.CoverImage600x400Url" alt=""></a>
+                        </div>
+                        <div class="back-blog-content">
+                            <em class="back-blog-date">@item.CreatedDate.ToString("dd-MMM-yyyy")</em>
+                            <a href="blog-details.html"><h3>@item.Title</h3></a>
+                            <ul>
+                                <li class="back-author"> <span><img src="@item.UserImageUrl" alt="image"></span> <a href="#">@item.Name @item.Surname</a> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            }            
+        </ul>
+    </div>
+</div>

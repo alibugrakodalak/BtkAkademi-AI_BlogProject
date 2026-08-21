@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zxx">
+@await Component.InvokeAsync("_LayoutHeadComponentPartial")
+    
+<body>
+    @await Component.InvokeAsync("_LayoutRightSideBarComponentPartial")
+    
+    <div id="back__preloader">
+        <div id="back__circle_loader"></div>
+        <div class="back__loader_logo"><img src="~/template/assets/images/preload.png" alt="Preload"></div>
+    </div>
+
+    <header id="back-header" class="back-header">
+
+        @await Component.InvokeAsync("_LayoutHeaderTopBarComponentPartial")
+
+        @await Component.InvokeAsync("_LayoutHeaderNavBarComponentPartial")        
+        
+    </header>
+
+    <div class="back-wrapper">
+        <div class="back-hero-area md-mt-40">
+            <div class="container">
+                <div class="row">
+
+                    @await Component.InvokeAsync("_DefaultSliderComponentPartial")
+
+                    @await Component.InvokeAsync("_DefaultFeatureComponentPartial")                    
+                    
+                </div>
+
+                @await Component.InvokeAsync("_DefaultGetCategoriesWithLastArticleComponentPartial")
+                
+            </div>
+        </div>
+
+        @await Component.InvokeAsync("_DefaultTrendingStoriesComponentPartial")
+        
+        @await Component.InvokeAsync("_DefaultLatestPostComponentPartial")
+
+        @* <div class="back-add text-center">
+            <div class="container">
+                <img src="/images/test.png" alt="add-image">
+            </div>
+        </div> *@
+
+        @* @await Component.InvokeAsync("_SubFeatureComponentPartial")         *@
+
+        @await Component.InvokeAsync("_DefaultTradingVideoComponentPartial")   
+        
+        @await Component.InvokeAsync("_SecondSubFeatureComponentPartial")    
+        
+        @await Component.InvokeAsync("_DefaultSubSliderComponentPartial")        
+        
+    </div>   
+
+    @await Component.InvokeAsync("_LayoutFooterComponentPartial")
+
+    @await Component.InvokeAsync("_LayoutScriptsComponentPartial")
+    
+</body>
+</html>

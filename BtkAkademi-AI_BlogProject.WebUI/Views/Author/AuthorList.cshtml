@@ -1,0 +1,248 @@
+﻿@model List<ResultUserDto>
+
+@{
+    ViewData["Title"] = "AuthorList";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+<section class="authors-page">
+    <style>
+        .authors-page {
+            --navy: #0F1B33;
+            --navy-soft: #16213E;
+            --blue: #2E8CFF;
+            --ink: #16213A;
+            --muted: #6B7280;
+            --paper: #FFFFFF;
+            --surface: #F7F9FC;
+            --line: #E7ECF3;
+            background: var(--surface);
+        }
+
+        .authors-page * { box-sizing: border-box; }
+        .authors-page a { text-decoration: none; }
+        .authors-page a:focus-visible,
+        .authors-page .author-card:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+        /* ---------- Hero band ---------- */
+        .authors-hero {
+            background: linear-gradient(165deg, var(--navy) 0%, var(--navy-soft) 100%);
+            padding: 3.75rem 1.5rem 5rem;
+            text-align: center;
+            color: #fff;
+        }
+        .authors-hero-inner { max-width: 38rem; margin: 0 auto; }
+        .authors-hero .eyebrow {
+            display: inline-block;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--blue);
+            margin-bottom: .9rem;
+        }
+        .authors-hero h1 {
+            font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: .75rem;
+        }
+        .authors-hero p {
+            color: #C7D0E3;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* ---------- Grid ---------- */
+        .authors-grid-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            transform: translateY(-2.5rem);
+        }
+        .authors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .author-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 1.85rem 1.5rem 1.6rem;
+            box-shadow: 0 16px 32px -22px rgba(15, 27, 51, .28);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .author-card:hover { transform: translateY(-5px); box-shadow: 0 22px 40px -20px rgba(15, 27, 51, .35); }
+
+        .author-avatar-wrap {
+            width: 92px; height: 92px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--blue), #7FB8FF);
+            margin-bottom: 1rem;
+        }
+        .author-avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            border: 3px solid var(--paper);
+            background: var(--surface);
+        }
+
+        .author-badge {
+            display: inline-block;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            padding: .28rem .7rem;
+            border-radius: 999px;
+            margin-bottom: .7rem;
+        }
+        .badge-1 { background: rgba(236, 72, 153, .12); color: #DB2777; }
+        .badge-2 { background: rgba(34, 165, 89, .12); color: #15803D; }
+        .badge-3 { background: rgba(245, 165, 36, .16); color: #B45309; }
+        .badge-4 { background: rgba(46, 140, 255, .12); color: #1D6FE0; }
+
+        .author-name { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
+
+        .author-bio {
+            font-size: .88rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 1.1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .author-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .3rem;
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+        .author-email {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .82rem;
+            color: var(--muted);
+            max-width: 100%;
+        }
+        .author-email span, .author-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .author-email:hover { color: var(--blue); }
+        .author-username { font-size: .78rem; color: #A6AFC1; }
+
+        .author-link {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--blue);
+            padding-top: .9rem;
+            border-top: 1px dashed var(--line);
+            width: 100%;
+            justify-content: center;
+            transition: gap .15s ease;
+        }
+        .author-link i { transition: transform .15s ease; }
+        .author-link:hover i { transform: translateX(3px); }
+
+        /* ---------- Empty state ---------- */
+        .authors-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3.5rem 1.5rem;
+            border: 1px dashed var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+        }
+        .authors-empty h3 { color: var(--ink); font-size: 1.1rem; margin-bottom: .5rem; }
+        .authors-empty p { color: var(--muted); font-size: .9rem; }
+
+        @@media (max-width: 640px) {
+            .authors-hero { padding: 3rem 1.25rem 4rem; }
+            .authors-grid-wrap { transform: translateY(-1.75rem); padding: 0 1.1rem; }
+            .authors-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+        }
+    </style>
+
+    <div class="authors-hero">
+        <div class="authors-hero-inner">
+            <span class="eyebrow">Neoton Ekibi</span>
+            <h1 style="color:white !important">Yazarlarımız</h1>
+            <p>Moda'dan teknolojiye, siyasetten seyahate; farklı alanlarda uzmanlaşmış yazarlarımızla tanışın.</p>
+        </div>
+    </div>
+
+    <div class="authors-grid-wrap">
+        @if (Model != null && Model.Any())
+        {
+            <div class="authors-grid">
+                @{ var i = 0; }
+                @foreach (var author in Model)
+                {
+                    i++;
+                    <article class="author-card">
+                        <div class="author-avatar-wrap">
+                            <img class="author-avatar" src="@author.ImageUrl" alt="@author.Name @author.Surname" loading="lazy" />
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(author.Title))
+                        {
+                            <span class="author-badge badge-@(((i - 1) % 4) + 1)">@author.Title</span>
+                        }
+
+                        <h3 class="author-name">@author.Name @author.Surname</h3>
+
+                        @if (!string.IsNullOrWhiteSpace(author.Description))
+                        {
+                            <p class="author-bio">@author.Description</p>
+                        }
+
+                        <div class="author-meta">
+                            @if (!string.IsNullOrWhiteSpace(author.Email))
+                            {
+                                <a class="author-email" href="mailto:@author.Email">
+                                    <i class="bi bi-envelope"></i>@author.Email
+                                </a>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(author.Username))
+                            {
+                                <span class="author-username">@@@author.Username</span>
+                            }
+                        </div>
+
+                        <a class="author-link" href="/yazar/@author.Username">
+                            Yazılarını Gör
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="authors-grid">
+                <div class="authors-empty">
+                    <h3>Henüz yazar eklenmemiş</h3>
+                    <p>Ekip büyüdükçe yazarlarımız burada listelenecek.</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+

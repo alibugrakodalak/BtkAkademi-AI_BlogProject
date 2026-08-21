@@ -1,0 +1,328 @@
+﻿@{
+    ViewData["Title"] = "CreateComment";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+
+    .translator-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,.08);
+    }
+
+    .translator-header {
+        background: linear-gradient(135deg,#10a37f,#0d8b6d);
+        padding: 30px;
+        color: white;
+    }
+
+    .translator-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .translator-subtitle {
+        opacity: .85;
+        font-size: 14px;
+    }
+
+    .custom-textarea {
+        min-height: 180px;
+        border-radius: 16px;
+        border: 1px solid #dee2e6;
+        padding: 15px;
+        resize: vertical;
+    }
+
+    .custom-textarea:focus {
+        box-shadow: none;
+        border-color: #10a37f;
+    }
+
+    .btn-ai {
+        background: linear-gradient(135deg,#10a37f,#0d8b6d);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+
+    .btn-ai:hover {
+        color: white;
+        opacity: .95;
+    }
+
+    .btn-clean {
+        border-radius: 12px;
+        padding: 12px 24px;
+    }
+
+    .result-card {
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .original-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .translated-card {
+        background: #ecfdf5;
+        border: 1px solid #10a37f;
+    }
+
+    .result-title {
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .result-text {
+        line-height: 1.8;
+        color: #475569;
+    }
+
+    .translated-text {
+        color: #065f46;
+        font-weight: 500;
+    }
+
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #eef2ff;
+        color: #4338ca;
+        padding: 8px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .copy-btn {
+        border-radius: 12px;
+    }
+
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+
+        <div class="breadcrumb-title pe-3">
+            AI Çeviri
+        </div>
+
+        <div class="ps-3">
+
+            <nav aria-label="breadcrumb">
+
+                <ol class="breadcrumb mb-0">
+
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active">
+                        Metin Çevirisi
+                    </li>
+
+                </ol>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+    <div class="card translator-card">
+
+        <div class="translator-header">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg"
+                     width="100" />
+
+                <div>
+
+                    <div class="translator-title">
+                        Metin Çevirisi
+                    </div>
+
+                    <div class="translator-subtitle">
+                        Türkçe içerikleri hızlı ve doğru şekilde İngilizceye çevirin.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form method="post">
+
+                <label class="form-label fw-semibold mb-2">
+                    Çevrilecek Türkçe Metin
+                </label>
+
+                <textarea name="CommentDetail"
+                          class="form-control custom-textarea"
+                          placeholder="Metni buraya yazın...">@ViewBag.OriginalText</textarea>
+
+                <div class="mt-4 d-flex gap-2">
+
+                    <button type="submit" class="btn btn-ai">
+
+                        <i class="bi bi-translate me-2"></i>
+                        Çeviriyi Başlat
+
+                    </button>
+
+                    <a href="@Url.Action("CreateComment")"
+                           class="btn btn-outline-secondary btn-clean">
+
+                        <i class="bi bi-arrow-clockwise me-2"></i>
+                        Temizle
+
+                    </a>
+
+                </div>
+
+            </form>
+
+            @if (ViewBag.Success == true)
+            {
+                <div class="mt-5">
+
+                    <div class="d-flex align-items-center gap-2 mb-4">
+
+                        <span class="badge bg-success">
+                            Çeviri Tamamlandı
+                        </span>
+
+                        <span class="info-badge">
+                            <i class="bi bi-cpu"></i>
+                            @ViewBag.Model
+                        </span>
+
+                        <span class="info-badge">
+                            <i class="bi bi-check-circle"></i>
+                            @ViewBag.StatusCode
+                        </span>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-6 mb-3">
+
+                            <div class="result-card original-card">
+
+                                <div class="result-title">
+                                    🇹🇷 Orijinal Metin
+                                </div>
+
+                                <div class="result-text">
+                                    @ViewBag.OriginalText
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-6 mb-3">
+
+                            <div class="result-card translated-card">
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                                    <div class="result-title mb-0">
+                                        🇺🇸 Çevrilmiş Metin
+                                    </div>
+
+                                    <button class="btn btn-success btn-sm copy-btn"
+                                            type="button"
+                                            onclick="copyTranslation()">
+
+                                        <i class="bi bi-clipboard"></i>
+                                        Kopyala
+
+                                    </button>
+
+                                </div>
+
+                                <div class="result-text translated-text"
+                                     id="translatedText">
+
+                                    @ViewBag.TranslatedText
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+            @if (ViewBag.Success == false)
+            {
+                <div class="alert alert-danger mt-4 rounded-4">
+
+                    <h6 class="fw-bold mb-2">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Çeviri İşlemi Başarısız
+                    </h6>
+
+                    <p class="mb-1">
+                        @ViewBag.Error
+                    </p>
+
+                    @if (ViewBag.Details != null)
+                    {
+                        <small>@ViewBag.Details</small>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    function copyTranslation() {
+
+    let text =
+    document.getElementById("translatedText").innerText;
+
+    navigator.clipboard.writeText(text);
+
+    Swal.fire({
+    icon: 'success',
+    title: 'Kopyalandı',
+    text: 'Çevrilmiş metin panoya kopyalandı.',
+    timer: 1800,
+    showConfirmButton: false
+    });
+    }
+
+</script>

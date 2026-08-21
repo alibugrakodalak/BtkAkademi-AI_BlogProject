@@ -1,0 +1,419 @@
+﻿@{
+    ViewData["Title"] = "TextToSpeech2";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+
+    .voice-card {
+        border: none;
+        border-radius: 28px;
+        overflow: hidden;
+        background: linear-gradient(135deg,#0f172a,#1e293b);
+        color: white;
+        box-shadow: 0 20px 40px rgba(0,0,0,.15);
+    }
+
+    .voice-header {
+        padding: 35px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .voice-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .voice-subtitle {
+        color: #94a3b8;
+    }
+
+    .voice-input {
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.08);
+        color: white;
+        border-radius: 18px;
+        padding: 18px;
+        min-height: 180px;
+        resize: vertical;
+    }
+
+        .voice-input:focus {
+            background: rgba(255,255,255,.07);
+            border-color: #22c55e;
+            box-shadow: none;
+            color: white;
+        }
+
+        .voice-input::placeholder {
+            color: #94a3b8;
+        }
+
+    .generate-btn {
+        background: linear-gradient(135deg,#22c55e,#16a34a);
+        border: none;
+        color: white;
+        border-radius: 14px;
+        padding: 12px 30px;
+        font-weight: 600;
+    }
+
+        .generate-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .assistant-panel {
+        text-align: center;
+        padding: 25px;
+    }
+
+    .assistant-avatar {
+        width: 220px;
+        height: 220px;
+        object-fit: contain;
+        border-radius: 50%;
+        background: rgba(255,255,255,.05);
+        padding: 10px;
+        transition: .4s;
+    }
+
+        .assistant-avatar.speaking {
+            box-shadow: 0 0 0 15px rgba(34,197,94,.18), 0 0 0 30px rgba(34,197,94,.10), 0 0 50px rgba(34,197,94,.35);
+        }
+
+    .voice-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(34,197,94,.15);
+        color: #4ade80;
+        padding: 8px 15px;
+        border-radius: 30px;
+        margin-top: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .play-btn {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg,#22c55e,#16a34a);
+        color: white;
+        font-size: 34px;
+        margin-top: 25px;
+        transition: .3s;
+    }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+        }
+
+    .audio-card {
+        background: rgba(255,255,255,.05);
+        border-radius: 18px;
+        padding: 25px;
+        margin-top: 30px;
+    }
+
+    .wave {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+        .wave span {
+            width: 5px;
+            background: #22c55e;
+            border-radius: 20px;
+            animation: wave 1s infinite ease-in-out;
+        }
+
+            .wave span:nth-child(1) {
+                height: 15px;
+            }
+
+            .wave span:nth-child(2) {
+                height: 35px;
+                animation-delay: .1s;
+            }
+
+            .wave span:nth-child(3) {
+                height: 22px;
+                animation-delay: .2s;
+            }
+
+            .wave span:nth-child(4) {
+                height: 40px;
+                animation-delay: .3s;
+            }
+
+            .wave span:nth-child(5) {
+                height: 20px;
+                animation-delay: .4s;
+            }
+
+    @@keyframes wave {
+
+        0%, 100% {
+            transform: scaleY(.7);
+        }
+
+        50% {
+            transform: scaleY(1.4);
+        }
+    }
+
+    .feature-box {
+        background: rgba(255,255,255,.04);
+        border-radius: 16px;
+        padding: 18px;
+        height: 100%;
+        text-align: center;
+    }
+
+    .feature-icon {
+        font-size: 28px;
+        color: #22c55e;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+
+        <div class="breadcrumb-title pe-3">
+            AI Voice
+        </div>
+
+        <div class="ps-3">
+            <nav>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Voice Assistant
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="card voice-card">
+
+        <div class="voice-header">
+
+            <div class="voice-title">
+                🎙️ AI Voice Assistant
+            </div>
+
+            <div class="voice-subtitle">
+                Metinlerinizi gerçekçi yapay zeka sesi ile seslendirin.
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <div class="row g-4 align-items-center">
+
+                <!-- SOL ALAN -->
+                <div class="col-lg-7">
+
+                    <form method="post">
+
+                        <label class="fw-semibold mb-2">
+                            Seslendirilecek Metin
+                        </label>
+
+                        <textarea name="text"
+                                  class="form-control voice-input"
+                                  placeholder="Merhaba, bugün size nasıl yardımcı olabilirim?"></textarea>
+
+                        <div class="mt-4">
+                            <button type="submit"
+                                    class="btn generate-btn">
+                                <i class="bi bi-mic-fill me-2"></i>
+                                Sesi Oluştur
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <div class="row g-3 mt-4">
+
+                        <div class="col-md-4">
+                            <div class="feature-box">
+                                <div class="feature-icon">🎧</div>
+                                <div class="fw-semibold">HD Ses</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="feature-box">
+                                <div class="feature-icon">⚡</div>
+                                <div class="fw-semibold">Hızlı Üretim</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="feature-box">
+                                <div class="feature-icon">🤖</div>
+                                <div class="fw-semibold">AI Destekli</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SAĞ ALAN -->
+                <div class="col-lg-5">
+
+                    <div class="assistant-panel">
+
+                        @if (ViewBag.AudioUrl == null)
+                        {
+                            <div class="audio-card">
+
+                                <div style="font-size:70px;">
+                                    🤖
+                                </div>
+
+                                <h4 class="fw-bold mt-3">
+                                    AI Hazır
+                                </h4>
+
+                                <p class="text-muted">
+                                    Sol taraftan bir metin girin ve
+                                    yapay zekanın seslendirmesini oluşturun.
+                                </p>
+
+                                <div class="wave mt-4">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+
+                            </div>
+                        }
+
+                        @if (ViewBag.AudioUrl != null)
+                        {
+                            <div>
+
+                                <img id="aiAvatar"
+                                     src="/animations/aitalk.gif"
+                                     class="assistant-avatar"
+                                     style="display:none;" />
+
+                                <div class="voice-status">
+                                    <i class="bi bi-circle-fill"></i>
+                                    Ses Hazır
+                                </div>
+
+                                <div class="audio-card">
+
+                                    <h5 class="fw-bold">
+                                        AI Yanıtı Oluşturuldu
+                                    </h5>
+
+                                    <div class="wave">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+
+                                    <button id="playBtn"
+                                            type="button"
+                                            class="play-btn">
+
+                                        <i class="bi bi-play-fill"></i>
+
+                                    </button>
+
+                                    <audio id="voiceAudio">
+                                        <source src="@ViewBag.AudioUrl" type="audio/mpeg" />
+                                    </audio>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-4 rounded-4">
+                    @ViewBag.Error
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+
+    const audio = document.getElementById("voiceAudio");
+    const btn = document.getElementById("playBtn");
+    const avatar = document.getElementById("aiAvatar");
+
+    if(audio && btn && avatar){
+
+        btn.addEventListener("click", function(){
+
+            if(audio.paused){
+
+                audio.play();
+
+                avatar.style.display = "block";
+                avatar.classList.add("speaking");
+
+                btn.innerHTML =
+                '<i class="bi bi-pause-fill"></i>';
+
+            }
+            else{
+
+                audio.pause();
+
+                avatar.classList.remove("speaking");
+
+                btn.innerHTML =
+                '<i class="bi bi-play-fill"></i>';
+            }
+        });
+
+        audio.onended = function(){
+
+            avatar.classList.remove("speaking");
+
+            btn.innerHTML =
+            '<i class="bi bi-play-fill"></i>';
+        };
+    }
+
+</script>

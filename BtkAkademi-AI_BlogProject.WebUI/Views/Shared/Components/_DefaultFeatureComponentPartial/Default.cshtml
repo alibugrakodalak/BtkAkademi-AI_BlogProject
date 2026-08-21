@@ -1,0 +1,56 @@
+﻿
+@model ResultArticleDto
+<div class="col-lg-6 back-hero-right">
+    <div class="row back-pl-6">
+        <div class="col-lg-12">
+            <ul>
+                <li>
+                    <div class="image-area">
+                        <a href="#"><img src="@ViewBag.LastPoliticsArticleFeatureImageUrl" alt="image"></a>
+                        <div class="back-btm-content">
+                            <a href="#" class="back-cate back-poli">Politika</a>
+                            <h3><a href="#">@ViewBag.LastPoliticsArticleTitle</a></h3>
+                            <ul>
+                                <li class="back-author"><span><img src="@ViewBag.LastTravelPoliticAuthorImageUrl" alt="image"></span><a href="#">@ViewBag.LastTravelPoliticAuthor</a></li>
+                                <li class="back-date"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>@ViewBag.LastPoliticsArticleCreatedDate.ToString("dd-MMMM-yyyy", new System.Globalization.CultureInfo("tr-TR"))</li>
+                                <li class="back-comments"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>13 Yorum</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <ul class="back-pr-3">
+                <li>
+                    <div class="image-area">
+                        <a href="#"><img src="@ViewBag.LastTechnologyArticleFeatureImageUrl" alt="image"></a>
+                        <div class="back-btm-content">
+                            <a href="#" class="back-cate back-tech">Teknoloji</a>
+                            <h3><a href="#">@ViewBag.LastTechnologyArticleTitle</a></h3>
+                            <ul>
+                                <li class="back-author"><span><img src="@ViewBag.LastTechnologyArticleAuthorImageUrl" alt="image"></span><a href="#">@ViewBag.LastTechnologyArticleAuthor</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6">
+            <ul class="back-pl-3">
+                <li>
+                    <div class="image-area">
+                        <a href="#"><img src="@ViewBag.LastTravelArticleFeatureImageUrl" alt="image"></a>
+                        <div class="back-btm-content">
+                            <a href="#" class="back-cate back-tra">Seyahat</a>
+                            <h3><a href="#">Uzak Diyarlara Yolculuk!</a></h3>
+                            <ul>
+                                <li class="back-author"><span><img src="@ViewBag.LastTravelArticleAuthorImageUrl" alt="image"></span><a href="#">@ViewBag.LastTravelArticleAuthor</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

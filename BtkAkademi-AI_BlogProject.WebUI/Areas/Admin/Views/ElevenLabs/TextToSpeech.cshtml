@@ -1,0 +1,300 @@
+﻿
+@{
+    ViewData["Title"] = "TextToSpeech";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+
+    .tts-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,.08);
+    }
+
+    .tts-header {
+        background: linear-gradient(135deg,#6366f1,#8b5cf6);
+        color: white;
+        padding: 35px;
+    }
+
+    .tts-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+    }
+
+    .tts-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .tts-subtitle {
+        opacity: .9;
+    }
+
+    .text-box {
+        min-height: 220px;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 18px;
+        resize: vertical;
+        font-size: 15px;
+    }
+
+        .text-box:focus {
+            box-shadow: none;
+            border-color: #6366f1;
+        }
+
+    .generate-btn {
+        background: linear-gradient(135deg,#6366f1,#8b5cf6);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 12px 28px;
+        font-weight: 600;
+    }
+
+        .generate-btn:hover {
+            color: white;
+            opacity: .95;
+        }
+
+    .info-card {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: rgba(99,102,241,.12);
+        color: #6366f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+
+    .audio-result {
+        border-radius: 20px;
+        background: linear-gradient(135deg,#eef2ff,#f5f3ff);
+        padding: 25px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .audio-player {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .wave-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+    .wave-bar {
+        width: 5px;
+        border-radius: 20px;
+        background: #8b5cf6;
+    }
+
+        .wave-bar:nth-child(1) {
+            height: 18px;
+        }
+
+        .wave-bar:nth-child(2) {
+            height: 32px;
+        }
+
+        .wave-bar:nth-child(3) {
+            height: 22px;
+        }
+
+        .wave-bar:nth-child(4) {
+            height: 40px;
+        }
+
+        .wave-bar:nth-child(5) {
+            height: 26px;
+        }
+
+        .wave-bar:nth-child(6) {
+            height: 35px;
+        }
+
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+
+        <div class="breadcrumb-title pe-3">
+            AI Seslendirme
+        </div>
+
+        <div class="ps-3">
+            <nav>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Text To Speech
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="card tts-card">
+
+        <div class="tts-header">
+
+            <div class="d-flex align-items-center gap-4">
+
+                <div class="tts-icon">
+                    🎙️
+                </div>
+
+                <div>
+
+                    <div class="tts-title">
+                        ElevenLabs Voice Studio
+                    </div>
+
+                    <div class="tts-subtitle">
+                        Metinleri yapay zeka ile profesyonel ses dosyasına dönüştürün.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+                <div class="col-lg-8">
+
+                    <form method="post">
+
+                        <label class="fw-semibold mb-2">
+                            Seslendirilecek Metin
+                        </label>
+
+                        <textarea name="text"
+                                  class="form-control text-box"
+                                  placeholder="Seslendirmek istediğiniz metni buraya yazın..."></textarea>
+
+                        <div class="mt-4">
+
+                            <button class="btn generate-btn">
+
+                                <i class="bi bi-soundwave me-2"></i>
+                                Ses Oluştur
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="col-lg-4">
+
+                    <div class="info-card">
+
+                        <div class="info-icon">
+                            <i class="bi bi-mic-fill"></i>
+                        </div>
+
+                        <h6 class="fw-bold">
+                            ElevenLabs AI
+                        </h6>
+
+                        <p class="text-muted mb-0">
+                            Yapay zeka destekli ses sentezi ile doğal ve gerçekçi ses çıktıları oluşturabilirsiniz.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-4 rounded-4">
+
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @ViewBag.Error
+
+                </div>
+            }
+
+            @if (ViewBag.AudioUrl != null)
+            {
+                <div class="audio-result mt-5">
+
+                    <div class="text-center">
+
+                        <div class="wave-box">
+
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+
+                        </div>
+
+                        <h4 class="fw-bold mb-2">
+                            Ses Dosyası Hazır
+                        </h4>
+
+                        <p class="text-muted">
+                            Yapay zeka tarafından oluşturulan ses çıktısı aşağıdadır.
+                        </p>
+
+                    </div>
+
+                    <audio controls class="audio-player">
+
+                        <source src="@ViewBag.AudioUrl"
+                                type="audio/mpeg" />
+
+                        Tarayıcınız audio etiketini desteklemiyor.
+
+                    </audio>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</main>

@@ -1,0 +1,378 @@
+﻿@model CreateMessageDto
+@{
+    ViewData["Title"] = "SendMessage";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+<div class="back-wrapper cw-redesign">
+
+    <style>
+        /* ================= Contact page redesign — scoped to .cw-redesign ================= */
+        .cw-redesign {
+            --cw-bg: #F5F6F2;
+            --cw-surface: #FFFFFF;
+            --cw-ink: #1C2624;
+            --cw-muted: #6B7570;
+            --cw-line: #E3E6E0;
+            --cw-accent: #2F6F5E;   /* deep teal — primary actions */
+            --cw-accent-2: #C99A3B; /* warm gold — highlights, dots */
+            --cw-radius: 14px;
+            --cw-shadow: 0 12px 32px -16px rgba(28, 38, 36, 0.22);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--cw-ink);
+        }
+
+        @@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        .cw-redesign .breadcrumbs-title {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .cw-redesign .back-nav a {
+            transition: color .15s ease;
+        }
+        .cw-redesign .back-nav a:hover { color: var(--cw-accent-2); }
+
+        .cw-redesign #back-contact { background: var(--cw-bg); }
+
+        .cw-redesign .back-title h2 {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.1rem);
+            margin-bottom: 1.75rem;
+        }
+
+        /* ---- Layout: sidebar channels + form card ---- */
+        .cw-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        @@media (max-width: 991px) {
+            .cw-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ---- Channels sidebar ---- */
+        .cw-channels {
+            background: var(--cw-surface);
+            border: 1px solid var(--cw-line);
+            border-radius: var(--cw-radius);
+            padding: 1.75rem 1.5rem;
+            position: relative;
+            box-shadow: var(--cw-shadow);
+        }
+        .cw-channels-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--cw-muted);
+            margin: 0 0 1.4rem 0;
+        }
+        .cw-channel-item {
+            position: relative;
+            display: flex;
+            gap: 0.9rem;
+            padding: 0 0 1.4rem 0;
+            margin-left: 0.4rem;
+        }
+        .cw-channel-item:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            left: 11px;
+            top: 26px;
+            bottom: -2px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--cw-accent-2), var(--cw-line));
+            opacity: 0.5;
+        }
+        .cw-dot {
+            flex: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--cw-accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        .cw-dot svg { width: 13px; height: 13px; stroke: #fff; fill: none; }
+        .cw-channel-body strong {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .cw-channel-body a {
+            display: block;
+            font-size: 0.92rem;
+            color: var(--cw-muted);
+            text-decoration: none;
+            transition: color .15s ease;
+        }
+        .cw-channel-body a:hover { color: var(--cw-accent); }
+        .cw-channel-body p { margin: 0; font-size: 0.92rem; color: var(--cw-muted); line-height: 1.5; }
+
+        .cw-social-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.3rem;
+        }
+        .cw-redesign .social-link { display: flex; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+        .cw-redesign .social-link a {
+            width: 34px; height: 34px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: var(--cw-bg);
+            border: 1px solid var(--cw-line);
+            color: var(--cw-ink);
+            transition: transform .15s ease, background .15s ease, color .15s ease;
+        }
+        .cw-redesign .social-link a:hover {
+            background: var(--cw-accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ---- Form card ---- */
+        .cw-form-card {
+            background: var(--cw-surface);
+            border: 1px solid var(--cw-line);
+            border-radius: var(--cw-radius);
+            padding: 2rem;
+            box-shadow: var(--cw-shadow);
+        }
+        #form-messages:empty { display: none; }
+        #form-messages {
+            margin-bottom: 1.2rem;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            background: #EFF6F2;
+            color: var(--cw-accent);
+            font-size: 0.9rem;
+        }
+
+        .cw-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.2rem;
+        }
+        @@media (max-width: 575px) {
+            .cw-form-grid { grid-template-columns: 1fr; }
+        }
+        .cw-field-full { grid-column: 1 / -1; }
+
+        .cw-field {
+            position: relative;
+            margin-bottom: 1.3rem;
+        }
+        .cw-field input,
+        .cw-field textarea {
+            width: 100%;
+            border: 1px solid var(--cw-line);
+            border-radius: 10px;
+            padding: 1.15rem 1rem 0.5rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--cw-ink);
+            background: var(--cw-bg);
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        .cw-field textarea { min-height: 140px; resize: vertical; padding-top: 1.4rem; }
+        .cw-field input:focus,
+        .cw-field textarea:focus {
+            outline: none;
+            border-color: var(--cw-accent);
+            box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.15);
+        }
+        .cw-field label {
+            position: absolute;
+            left: 1rem;
+            top: 1.05rem;
+            font-size: 0.92rem;
+            color: var(--cw-muted);
+            pointer-events: none;
+            transition: all .15s ease;
+            background: transparent;
+        }
+        .cw-field textarea + label { top: 1.3rem; }
+        .cw-field input:focus + label,
+        .cw-field input:not(:placeholder-shown) + label,
+        .cw-field textarea:focus + label,
+        .cw-field textarea:not(:placeholder-shown) + label {
+            top: 0.3rem;
+            font-size: 0.72rem;
+            color: var(--cw-accent);
+            font-weight: 500;
+        }
+
+        .cw-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--cw-accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.9rem 1.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+        .cw-submit:hover { background: #285d4f; box-shadow: 0 8px 20px -8px rgba(47,111,94,0.55); transform: translateY(-1px); }
+        .cw-submit:focus-visible { outline: 3px solid var(--cw-accent-2); outline-offset: 2px; }
+        .cw-submit svg { width: 16px; height: 16px; transition: transform .15s ease; }
+        .cw-submit:hover svg { transform: translate(2px, -2px); }
+
+        /* ---- Map ---- */
+        .cw-map-wrap {
+            margin-top: 2.5rem;
+            border-radius: var(--cw-radius);
+            overflow: hidden;
+            box-shadow: var(--cw-shadow);
+            border: 1px solid var(--cw-line);
+        }
+        .cw-map-wrap iframe { display: block; }
+
+        @@media (prefers-reduced-motion: reduce) {
+            .cw-redesign * { transition: none !important; }
+        }
+    </style>
+
+    <!--================= Back Breadcrumbs Section Start Here =================-->
+    <div class="back-breadcrumbs">
+        <div class="breadcrumbs-wrap">
+            <div class="breadcrumbs-inner">
+                <div class="container">
+                    <div class="breadcrumbs-text">
+                        <h1 class="breadcrumbs-title">Bize Yazın</h1>
+                        <div class="back-nav">
+                            <ul>
+                                <li><a href="/Default/Index/">Anasayfa</a></li>
+                                <li aria-current="page">İletişim</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="back-contact" class="back-contact-page pt-70 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="back-title">
+                        <h2>Mesaj Gönderin</h2>
+                    </div>
+
+                    <div class="cw-grid">
+                        <!-- ============ Contact channels ============ -->
+                        <aside class="cw-channels">
+                            <h3 class="cw-channels-title">İletişim Bilgileri</h3>
+
+                            <div class="cw-channel-item">
+                                <span class="cw-dot" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                </span>
+                                <div class="cw-channel-body">
+                                    <strong>Telefon</strong>
+                                    <a href="tel:@ViewBag.PhoneNumber1">@ViewBag.PhoneNumber1</a>
+                                    <a href="tel:@ViewBag.PhoneNumber2">@ViewBag.PhoneNumber2</a>
+                                </div>
+                            </div>
+
+                            <div class="cw-channel-item">
+                                <span class="cw-dot" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" stroke-opacity="0"/><path d="M22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                                </span>
+                                <div class="cw-channel-body">
+                                    <strong>Mail Adreslerimiz</strong>
+                                    <a href="mailto:@ViewBag.Mail1">@ViewBag.Mail1</a>
+                                    <a href="mailto:@ViewBag.Mail2">@ViewBag.Mail2</a>
+                                </div>
+                            </div>
+
+                            <div class="cw-channel-item">
+                                <span class="cw-dot" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                </span>
+                                <div class="cw-channel-body">
+                                    <strong>Adres</strong>
+                                    <p>@ViewBag.Address</p>
+                                </div>
+                            </div>
+
+                            <div class="cw-channel-item">
+                                <span class="cw-dot" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+                                </span>
+                                <div class="cw-channel-body">
+                                    <strong>Sosyal Medya</strong>
+                                    <ul class="social-link">
+                                        <li><a href="https://www.facebook.com" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                        <li><a href="https://www.x.com" aria-label="X (Twitter)"><i class="fa-brands fa-twitter"></i></a></li>
+                                        <li><a href="https://www.instagram.com" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                                        <li><a href="https://www.linkedin.com" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- ============ Form ============ -->
+                        <div class="cw-form-card">
+                            <div id="form-messages" role="status" aria-live="polite"></div>
+
+                            <form id="contact-form" method="post" class="cw-form" novalidate>
+                                <div class="cw-form-grid">
+                                    <div class="cw-field">
+                                        <input id="name" type="text" asp-for="Name" placeholder=" " autocomplete="given-name" required>
+                                        <label for="name">Adınız</label>
+                                    </div>
+
+                                    <div class="cw-field">
+                                        <input id="surname" type="text" asp-for="Surname" placeholder=" " autocomplete="family-name" required>
+                                        <label for="surname">Soyadınız</label>
+                                    </div>
+
+                                    <div class="cw-field">
+                                        <input id="email" type="email" asp-for="Email" placeholder=" " autocomplete="email" required>
+                                        <label for="email">Mail Adresi</label>
+                                    </div>
+
+                                    <div class="cw-field">
+                                        <input id="subject" type="text" asp-for="Subject" placeholder=" " required>
+                                        <label for="subject">Konu Başlığı</label>
+                                    </div>
+
+                                    <div class="cw-field cw-field-full">
+                                        <textarea id="message" name="message" placeholder=" " required></textarea>
+                                        <label for="message">Mesajınızı Buraya Yazınız</label>
+                                    </div>
+
+                                    <div class="cw-field-full">
+                                        <button type="submit" class="cw-submit">
+                                            Mesaj Gönder
+                                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cw-map-wrap">
+        <iframe src="@ViewBag.Map" width="100%" height="420" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Konum haritası"></iframe>
+    </div>
+
+</div>

@@ -1,0 +1,14 @@
+﻿<div class="back-trading-video">
+    <div class="container">
+        <div class="back-title">
+            <h2>Video İçerikler</h2>
+        </div>
+        <div class="row">
+            
+            @await Component.InvokeAsync("_TradingVideoIsFeatureByTrueComponentPartial")
+
+            @await Component.InvokeAsync("_TradingVideoListComponentPartial")
+            
+        </div>
+    </div>
+</div>

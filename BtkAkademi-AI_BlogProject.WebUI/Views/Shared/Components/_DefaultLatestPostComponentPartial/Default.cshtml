@@ -1,0 +1,37 @@
+﻿@model ResultLastArticleDto
+<div class="back-hero-area back-latest-posts">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="back-title">
+                    <h2>Son Yazılarımız</h2>
+                </div>
+            </div>
+            <div class="col-md-4 text-right">
+                <a href="#" class="back-btn">Tümünü Gör</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <ul>
+                    <li>
+                        <div class="image-area">
+                            <a href="#"><img src="@ViewBag.LastArticleImage1200x800Url" alt="image"></a>
+                            <div class="back-btm-content">
+                                <a href="#" class="back-cate back-tra">@ViewBag.CategoryName</a>
+                                <h3><a href="#">@ViewBag.Title</a></h3>
+                                <ul>
+                                    <li class="back-author"><span><img src="~/template/assets/images/author/1.jpg" alt="image"></span><a href="#">@ViewBag.Author</a></li>
+                                    <li class="back-date"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>@ViewBag.CreatedDate.ToString("dd-MMM-yyyy")</li>
+                                    <li class="back-comments"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>21 Yorum</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            @await Component.InvokeAsync("_DefaultLast4ArticlesWithCategoryComponentPartial")
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,244 @@
+﻿@model BtkAkademi_AI_BlogProject.WebUI.DTO_s.ContactDtos.ResultContactDto
+
+@{
+    ViewData["Title"] = "ContactList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .badge-active {
+        background: linear-gradient(135deg,#22c55e,#16a34a);
+        color: #fff;
+        padding: 10px 22px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 6px 14px rgba(22,163,74,.25);
+    }
+
+    .detail-topbar {
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px 26px;
+        box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,.06);
+        margin-bottom: 24px;
+    }
+
+    .edit-btn {
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 10px 22px;
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,.06);
+        padding: 28px;
+        height: 100%;
+    }
+
+    .detail-card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #344767;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #eef1f5;
+        margin-bottom: 20px;
+    }
+
+    .detail-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        color: #8a94a6;
+        margin-bottom: 4px;
+    }
+
+    .detail-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 22px;
+    }
+
+        .detail-value:last-child {
+            margin-bottom: 0;
+        }
+
+    .detail-link {
+        color: #0d6efd;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .detail-link:hover {
+            text-decoration: underline;
+        }
+
+    .description-block {
+        background: #f8f9fb;
+        border-left: 4px solid #0d6efd;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        color: #374151;
+        line-height: 1.7;
+    }
+
+        .description-block:last-child {
+            margin-bottom: 0;
+        }
+
+    .row-gap {
+        margin-bottom: 24px;
+    }
+
+    /* Kayit yokken gosterilen bos durum karti */
+    .empty-state-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,.06);
+        padding: 60px 30px;
+        text-align: center;
+    }
+
+    .empty-state-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #eef4ff;
+        color: #0d6efd;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .empty-state-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #344767;
+        margin-bottom: 8px;
+    }
+
+    .empty-state-text {
+        color: #8a94a6;
+        margin-bottom: 24px;
+    }
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+        <div class="breadcrumb-title pe-3 fw-bold">
+            Site Ayarları
+        </div>
+
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        İletişim Bilgileri
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (Model == null)
+    {
+        <div class="empty-state-card">
+            <div class="empty-state-icon">
+                <i class="bi bi-telephone-x"></i>
+            </div>
+            <div class="empty-state-title">Henüz bir iletişim bilgisi eklenmedi</div>
+            <div class="empty-state-text">
+                Sistemde kayıtlı iletişim bilgisi bulunmuyor. Yalnızca 1 adet iletişim bilgisi girilebilir.
+            </div>
+            <a href="/Contact/CreateContact/" class="btn btn-primary px-4 py-2">
+                <i class="bi bi-plus-circle me-2"></i>
+                İletişim Bilgisi Ekle
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-between align-items-center detail-topbar">
+            <span class="badge-active">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Aktif İletişim Bilgisi
+            </span>
+
+            <a href="/Admin/Contact/UpdateContact/@Model.ContactId" class="btn btn-outline-primary edit-btn">
+                <i class="bi bi-pencil-square me-2"></i>
+                Düzenle
+            </a>
+        </div>
+
+        <div class="row row-gap">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="detail-card">
+                    <div class="detail-card-title">Telefon Bilgileri</div>
+
+                    <div class="detail-label">Telefon 1</div>
+                    <div class="detail-value">@Model.PhoneNumberFirst</div>
+
+                    <div class="detail-label">Telefon 2</div>
+                    <div class="detail-value">@Model.PhoneNumberSecond</div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-card">
+                    <div class="detail-card-title">E-posta Bilgileri</div>
+
+                    <div class="detail-label">E-posta 1</div>
+                    <div class="detail-value">@Model.FirstEmail</div>
+
+                    <div class="detail-label">E-posta 2</div>
+                    <div class="detail-value">@Model.SecondEmail</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-gap">
+            <div class="col-12">
+                <div class="detail-card">
+                    <div class="detail-card-title">Adres Bilgileri</div>
+
+                    <div class="detail-label">Adres</div>
+                    <div class="detail-value">@Model.Address</div>
+
+                    <div class="detail-label">Harita Konumu</div>
+                    <div class="detail-value">
+                        <a href="@Model.MapLocation" target="_blank" rel="noopener" class="detail-link">
+                            Haritada Görüntüle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="detail-card">
+                    <div class="detail-card-title">Açıklamalar</div>
+
+                    <div class="description-block">@Model.Description1</div>
+                    <div class="description-block">@Model.Description2</div>
+                </div>
+            </div>
+        </div>
+    }
+
+</main>

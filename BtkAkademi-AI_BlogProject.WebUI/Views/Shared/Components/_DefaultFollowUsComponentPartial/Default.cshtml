@@ -1,0 +1,16 @@
+﻿@model List<ResultSocialMediaDto>
+<div class="back-title back-small-title pt-25">
+    <h2>Bizi Takip Edin</h2>
+</div>
+
+<ul class="back-instragram">
+    @foreach (var item in Model)
+    {        
+        <li>
+            <a href="@item.SocialMediaLink"> 
+                <img src="@item.ImageUrl400x300" alt="image"> 
+                <i class="@item.IconUrl"></i>
+            </a>
+        </li>
+    }
+</ul>

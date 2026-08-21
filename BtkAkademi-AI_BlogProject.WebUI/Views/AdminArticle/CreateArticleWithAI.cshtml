@@ -1,0 +1,219 @@
+﻿@{
+    ViewData["Title"] = "AI ile Makale Oluştur";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .ai-card {
+        border: none;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,.08);
+    }
+
+    .ai-header {
+        background: linear-gradient(135deg,#7c3aed,#4f46e5);
+        color: white;
+        padding: 35px;
+    }
+
+    .ai-title {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .ai-subtitle {
+        opacity: .9;
+    }
+
+    .modern-input {
+        height: 60px;
+        border-radius: 14px;
+        border: 1px solid #dee2e6;
+    }
+
+        .modern-input:focus {
+            box-shadow: none;
+            border-color: #7c3aed;
+        }
+
+    .generate-btn {
+        height: 60px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .suggestion-tag {
+        display: inline-block;
+        padding: 8px 14px;
+        background: #f3f4f6;
+        border-radius: 12px;
+        margin: 5px;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+        .suggestion-tag:hover {
+            background: #e5e7eb;
+        }
+
+    .article-result {
+        background: #fafafa;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        padding: 25px;
+        line-height: 1.8;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+</style>
+
+<main class="page-content">
+
+    <div class="card ai-card">
+
+        <div class="ai-header">
+
+            
+
+            <div class="ai-title">
+                <img src="~/images/openai.svg"
+                     style="width:38px;height:38px;"
+                     alt="OpenAI" /> AI ile Makale Oluştur
+            </div>
+
+            <div class="ai-subtitle">
+                Sadece konuyu yazın, yapay zeka sizin için profesyonel bir makale oluştursun.
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form method="post">
+
+                <label class="form-label fw-semibold">
+                    Makale Konusu
+                </label>
+
+                <input type="text"
+                       id="topicInput"
+                       name="topic"
+                       class="form-control modern-input mb-3"
+                       placeholder="Örn: Yapay zekanın yazılım sektörüne etkisi" />
+
+                <div class="mb-4">
+
+                    <div class="small text-muted mb-2">
+                        Önerilen Konular
+                    </div>
+
+                    <span class="suggestion-tag"
+                          onclick="fillTopic(this)">
+                        Bitcoin ETF'lerinin piyasaya etkisi
+                    </span>
+
+                    <span class="suggestion-tag"
+                          onclick="fillTopic(this)">
+                        Yapay zeka ve finans sektörü
+                    </span>
+
+                    <span class="suggestion-tag"
+                          onclick="fillTopic(this)">
+                        Teknik analiz nedir?
+                    </span>
+
+                    <span class="suggestion-tag"
+                          onclick="fillTopic(this)">
+                        Yazılım geliştiriciler için AI araçları
+                    </span>
+
+                </div>
+
+                <button class="btn btn-primary generate-btn w-100">
+                    <i class="bi bi-stars me-2"></i>
+                    Makaleyi Oluştur
+                </button>
+
+            </form>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @ViewBag.Error
+                </div>
+            }
+
+            @if (ViewBag.Article != null)
+            {
+                <div class="mt-5">
+
+                    <div class="result-header">
+
+                        <h4>
+                            <i class="bi bi-file-earmark-richtext-fill text-primary me-2"></i>
+                            Oluşturulan Makale
+                        </h4>
+
+                        <button class="btn btn-outline-primary"
+                                onclick="copyArticle()"
+                                type="button">
+                            <i class="bi bi-clipboard"></i>
+                            Kopyala
+                        </button>
+
+                    </div>
+
+                    <div class="article-result"
+                         id="articleContent">
+
+                        @Html.Raw(ViewBag.Article.Replace("\n", "<br/>"))
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+
+
+    function fillTopic(element) {
+        document.getElementById("topicInput").value =
+            element.innerText;
+    }
+
+        function copyArticle() {
+
+        const text =
+            document.getElementById("articleContent").innerText;
+
+        navigator.clipboard.writeText(text);
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Kopyalandı',
+            text: 'Makale içeriği panoya başarıyla kopyalandı.',
+            confirmButtonText: 'Tamam',
+            confirmButtonColor: '#10a37f',
+            timer: 2500,
+            timerProgressBar: true
+        });
+    }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -1,0 +1,20 @@
+﻿@model List<ResultCommentWithUserDto>
+
+<div class="back-title back-small-title pt-50">
+    <h2>Son Yorumlar</h2>
+</div>
+<div class="widget back-recent-comments">
+    <ul class="recent-comments">
+        @foreach(var item in Model)
+        {
+            <li>
+                <span class="post-images"><img src="@item.UserImageUrl" alt="post"></span>
+                <div class="titles">
+                    <h4>@item.Name @item.Surname</h4>
+                    <span>@item.CommentDate.ToString("dd-MM-yyyy")</span>
+                    <p>@item.CommentDetail</p>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

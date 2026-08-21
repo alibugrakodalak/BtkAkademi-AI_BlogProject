@@ -1,0 +1,26 @@
+﻿using BtkAkademi_AI_BlogProject.WebApi.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace BtkAkademi_AI_BlogProject.WebApi.Context
+{
+	public class BlogIAContext : IdentityDbContext<AppUser>
+	{
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.UseSqlServer("Server = DESKTOP-1HRKITH\\SQLEXPRESS; initial Catalog = BtkAkademiIABlogDb; integrated security = true;");
+		}
+
+		public DbSet<About> Abouts { get; set; }
+		public DbSet<Article> Articles { get; set; }
+		public DbSet<Category> Categories { get; set; }
+		public DbSet<Contact> Contacts { get; set; }
+		public DbSet<Employee> Employees { get; set; }
+		public DbSet<TradingVideo> TradingVideos { get; set; }
+		public DbSet<Comment> Comments { get; set; }
+		public DbSet<SliderCarousel> SliderCarousels { get; set; }
+		public DbSet<Message> Messages { get; set; }
+		public DbSet<SocialMedia> SocialMedias { get; set; }
+
+	}
+}

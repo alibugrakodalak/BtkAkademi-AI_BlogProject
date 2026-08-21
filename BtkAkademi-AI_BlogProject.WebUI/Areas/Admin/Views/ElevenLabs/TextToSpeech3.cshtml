@@ -1,0 +1,465 @@
+﻿@{
+    ViewData["Title"] = "TextToSpeech3";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<main class="page-content">
+
+<style>
+    /* Scope everything under #rachelChatRoot to avoid layout conflicts */
+    #rachelChatRoot {
+        width: 100%;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        background:
+            radial-gradient(ellipse 60% 50% at 20% 20%, rgba(124,110,255,0.22) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 80% 80%, rgba(94,187,255,0.18) 0%, transparent 70%),
+            #0D1117;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        box-sizing: border-box;
+    }
+
+    #rachelChatRoot *, #rachelChatRoot *::before, #rachelChatRoot *::after {
+        box-sizing: border-box;
+    }
+
+    /* ── CARD ── */
+    #rachelChatRoot .rc-card {
+        width: 100%;
+        max-width: 720px;
+        height: 80vh;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    /* ── HEADER ── */
+    #rachelChatRoot .rc-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 22px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: rgba(0,0,0,0.20);
+        flex-shrink: 0;
+    }
+
+    #rachelChatRoot .rc-hav {
+        position: relative;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+    }
+
+    #rachelChatRoot .rc-ring {
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #7C6EFF, #5EBBFF, #7C6EFF);
+        animation: rcSpin 4s linear infinite;
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    #rachelChatRoot .rc-ring.speaking { opacity: 1; }
+
+    #rachelChatRoot .rc-core {
+        position: absolute;
+        inset: 2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1E1B4B, #162040);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        z-index: 1;
+    }
+
+    #rachelChatRoot .rc-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #F0F0F5;
+        letter-spacing: 0.01em;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    #rachelChatRoot .rc-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #8B8CA0;
+        margin-top: 2px;
+    }
+
+    #rachelChatRoot .rc-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #34D399;
+        box-shadow: 0 0 6px #34D399;
+        animation: rcPulseDot 2s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+
+    /* ── MESSAGES ── */
+    #rachelChatRoot .rc-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        scroll-behavior: smooth;
+    }
+
+    #rachelChatRoot .rc-messages::-webkit-scrollbar { width: 4px; }
+    #rachelChatRoot .rc-messages::-webkit-scrollbar-track { background: transparent; }
+    #rachelChatRoot .rc-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+
+    #rachelChatRoot .rc-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        animation: rcFadeIn 0.28s ease both;
+    }
+
+    #rachelChatRoot .rc-row.rc-user { justify-content: flex-end; }
+    #rachelChatRoot .rc-row.rc-bot  { justify-content: flex-start; }
+
+    #rachelChatRoot .rc-mini-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7C6EFF, #5EBBFF);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        box-shadow: 0 0 10px rgba(124,110,255,0.4);
+    }
+
+    #rachelChatRoot .rc-bubble {
+        max-width: 72%;
+        padding: 11px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.65;
+        font-weight: 400;
+    }
+
+    #rachelChatRoot .rc-row.rc-bot .rc-bubble {
+        background: rgba(124,110,255,0.14);
+        border: 1px solid rgba(124,110,255,0.25);
+        color: #DDDDF0;
+        border-bottom-left-radius: 5px;
+    }
+
+    #rachelChatRoot .rc-row.rc-user .rc-bubble {
+        background: linear-gradient(135deg, #7C6EFF, #5EBBFF);
+        color: #fff;
+        border-bottom-right-radius: 5px;
+        box-shadow: 0 4px 18px rgba(124,110,255,0.35);
+    }
+
+    /* Typing dots */
+    #rachelChatRoot .rc-typing {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 11px 16px;
+        background: rgba(124,110,255,0.10);
+        border: 1px solid rgba(124,110,255,0.20);
+        border-radius: 18px;
+        border-bottom-left-radius: 5px;
+    }
+
+    #rachelChatRoot .rc-td {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #7C6EFF;
+        animation: rcBounce 1.2s ease-in-out infinite;
+    }
+
+    #rachelChatRoot .rc-td:nth-child(2) { animation-delay: 0.18s; }
+    #rachelChatRoot .rc-td:nth-child(3) { animation-delay: 0.36s; }
+
+    /* ── FOOTER ── */
+    #rachelChatRoot .rc-footer {
+        padding: 12px 18px 16px;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        background: rgba(0,0,0,0.15);
+        flex-shrink: 0;
+    }
+
+    #rachelChatRoot .rc-speaking {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding-bottom: 10px;
+    }
+
+    #rachelChatRoot .rc-wave {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    #rachelChatRoot .rc-bar {
+        width: 3px;
+        border-radius: 2px;
+        background: linear-gradient(180deg, #7C6EFF, #5EBBFF);
+        animation: rcWave 0.75s ease-in-out infinite alternate;
+    }
+
+    #rachelChatRoot .rc-bar:nth-child(1) { height: 8px;  animation-delay: 0.0s; }
+    #rachelChatRoot .rc-bar:nth-child(2) { height: 15px; animation-delay: 0.1s; }
+    #rachelChatRoot .rc-bar:nth-child(3) { height: 22px; animation-delay: 0.2s; }
+    #rachelChatRoot .rc-bar:nth-child(4) { height: 15px; animation-delay: 0.3s; }
+    #rachelChatRoot .rc-bar:nth-child(5) { height: 8px;  animation-delay: 0.4s; }
+
+    #rachelChatRoot .rc-speaking span {
+        font-size: 12px;
+        color: #8B8CA0;
+    }
+
+    #rachelChatRoot .rc-input-wrap {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 16px;
+        padding: 9px 12px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #rachelChatRoot .rc-input-wrap:focus-within {
+        border-color: rgba(124,110,255,0.55);
+        box-shadow: 0 0 0 3px rgba(124,110,255,0.10);
+    }
+
+    #rachelChatRoot .rc-textarea {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        resize: none;
+        color: #E0E0EE;
+        font-family: inherit;
+        font-size: 14px;
+        line-height: 1.55;
+        max-height: 110px;
+        overflow-y: auto;
+        scrollbar-width: none;
+    }
+
+    #rachelChatRoot .rc-textarea::placeholder { color: rgba(255,255,255,0.28); }
+    #rachelChatRoot .rc-textarea::-webkit-scrollbar { display: none; }
+
+    #rachelChatRoot .rc-send {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #7C6EFF, #5EBBFF);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 14px rgba(124,110,255,0.40);
+    }
+
+    #rachelChatRoot .rc-send:hover  { transform: scale(1.08); box-shadow: 0 6px 20px rgba(124,110,255,0.55); }
+    #rachelChatRoot .rc-send:active { transform: scale(0.94); }
+
+    #rachelChatRoot .rc-send svg { width: 16px; height: 16px; fill: white; }
+
+    /* ── KEYFRAMES ── */
+    @@keyframes rcSpin     { to { transform: rotate(360deg); } }
+    @@keyframes rcPulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.82)} }
+    @@keyframes rcFadeIn   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    @@keyframes rcBounce   { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-6px);opacity:1} }
+    @@keyframes rcWave     { from{transform:scaleY(.45);opacity:.55} to{transform:scaleY(1);opacity:1} }
+
+    @@media (max-width:600px) {
+        #rachelChatRoot .rc-card { height: 88vh; border-radius: 14px; }
+        #rachelChatRoot .rc-messages { padding: 14px 14px; }
+        #rachelChatRoot .rc-footer { padding: 10px 12px 14px; }
+    }
+</style>
+
+<!-- ROOT -->
+<div id="rachelChatRoot">
+  <div class="rc-card">
+
+    <!-- HEADER -->
+    <div class="rc-header">
+      <div class="rc-hav">
+        <div class="rc-ring" id="rcRing"></div>
+        <div class="rc-core">🤖</div>
+      </div>
+      <div>
+        <p class="rc-title">Rachel AI</p>
+        <div class="rc-status">
+          <span class="rc-dot"></span>
+          <span id="rcStatus">Çevrimiçi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="rc-messages" id="rcChat">
+      <div class="rc-row rc-bot">
+        <div class="rc-mini-avatar">🤖</div>
+        <div class="rc-bubble">Merhaba! Ben Rachel. Size nasıl yardımcı olabilirim?</div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="rc-footer">
+
+      <!-- Speaking indicator -->
+      <div class="rc-speaking" id="rcSpeaking">
+        <div class="rc-wave">
+          <div class="rc-bar"></div>
+          <div class="rc-bar"></div>
+          <div class="rc-bar"></div>
+          <div class="rc-bar"></div>
+          <div class="rc-bar"></div>
+        </div>
+        <span>Rachel konuşuyor…</span>
+      </div>
+
+      <!-- Input form -->
+      <form id="rcForm" method="post">
+        <div class="rc-input-wrap">
+          <textarea
+            class="rc-textarea"
+            name="text"
+            id="rcText"
+            rows="1"
+            oninput="rcResize(this)"></textarea>
+          <button type="submit" class="rc-send" title="Gönder">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Hidden audio -->
+<audio id="rcAudio" style="display:none"></audio>
+
+<script>
+  var rcChat     = document.getElementById("rcChat");
+  var rcAudio    = document.getElementById("rcAudio");
+  var rcRing     = document.getElementById("rcRing");
+  var rcSpeaking = document.getElementById("rcSpeaking");
+  var rcStatus   = document.getElementById("rcStatus");
+
+  function rcResize(el) {
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 110) + "px";
+  }
+
+  function rcScroll() {
+    rcChat.scrollTop = rcChat.scrollHeight;
+  }
+
+  function rcAddBubble(role, html) {
+    var div = document.createElement("div");
+    if (role === "user") {
+      div.className = "rc-row rc-user";
+      div.innerHTML = '<div class="rc-bubble">' + html + '</div>';
+    } else {
+      div.className = "rc-row rc-bot";
+      div.innerHTML = '<div class="rc-mini-avatar">🤖</div><div class="rc-bubble">' + html + '</div>';
+    }
+    rcChat.appendChild(div);
+    rcScroll();
+  }
+
+  function rcShowTyping() {
+    var div = document.createElement("div");
+    div.className = "rc-row rc-bot";
+    div.id = "rcTyping";
+    div.innerHTML = '<div class="rc-mini-avatar">🤖</div><div class="rc-typing"><div class="rc-td"></div><div class="rc-td"></div><div class="rc-td"></div></div>';
+    rcChat.appendChild(div);
+    rcScroll();
+  }
+
+  function rcHideTyping() {
+    var t = document.getElementById("rcTyping");
+    if (t) t.remove();
+  }
+
+  function rcSetSpeaking(on) {
+    if (on) {
+      rcRing.classList.add("speaking");
+      rcSpeaking.style.display = "flex";
+      rcStatus.textContent = "Konuşuyor…";
+    } else {
+      rcRing.classList.remove("speaking");
+      rcSpeaking.style.display = "none";
+      rcStatus.textContent = "Çevrimiçi";
+    }
+  }
+
+  // Enter = gönder, Shift+Enter = yeni satır
+  document.getElementById("rcText").addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      document.getElementById("rcForm").requestSubmit();
+    }
+  });
+
+  document.getElementById("rcForm").addEventListener("submit", function() {
+    var txt = document.getElementById("rcText").value.trim();
+    if (!txt) return;
+    rcAddBubble("user", txt);
+    rcShowTyping();
+    document.getElementById("rcText").style.height = "auto";
+  });
+</script>
+
+@if (ViewBag.AudioUrl != null && ViewBag.Answer != null)
+{
+  <script>
+    rcHideTyping();
+    rcAddBubble("bot", "@Html.Raw(ViewBag.Answer)");
+
+    rcAudio.src = "@ViewBag.AudioUrl";
+    rcAudio.pause();
+    rcAudio.currentTime = 0;
+    rcSetSpeaking(true);
+
+    rcAudio.play().catch(function() {
+      console.log("Autoplay engellendi.");
+    });
+
+    rcAudio.onended = function() { rcSetSpeaking(false); };
+  </script>
+}
+
+</main>

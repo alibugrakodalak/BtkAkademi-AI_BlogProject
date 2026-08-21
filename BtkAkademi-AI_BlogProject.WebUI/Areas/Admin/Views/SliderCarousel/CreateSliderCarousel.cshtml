@@ -1,0 +1,90 @@
+﻿@model CreateSliderCarouselDto
+
+@{
+    ViewData["Title"] = "CreateSliderCarousel";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    .sc-panel{
+        --sc-ink:#1B1D23; --sc-paper:#FBF9F6; --sc-slate:#6B7280; --sc-line:#E5E1D8;
+        --sc-amber:#C8792C; --sc-amber-deep:#9C5D1F;
+        --sc-moss:#4C7A5E; --sc-moss-deep:#375943;
+        font-family:'Inter',sans-serif; color:var(--sc-ink);
+    }
+    .sc-panel .sc-eyebrow{
+        font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.12em;
+        text-transform:uppercase; color:var(--sc-amber); display:block; margin-bottom:.35rem;
+    }
+    .sc-panel .sc-title{ font-family:'Fraunces',serif; font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:0; }
+    .sc-panel .sc-subtitle{ color:var(--sc-slate); font-size:.95rem; margin-top:.25rem; }
+    .sc-panel .sc-header{
+        display:flex; justify-content:space-between; align-items:flex-end;
+        margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--sc-line);
+    }
+    .sc-btn{
+        font-family:'Inter',sans-serif; font-weight:500; font-size:.9rem; border-radius:999px;
+        padding:.55rem 1.25rem; display:inline-flex; align-items:center; gap:.4rem;
+        border:1px solid transparent; text-decoration:none;
+        transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .sc-btn:hover{ transform:translateY(-1px); text-decoration:none; }
+    .sc-btn:focus-visible{ outline:2px solid var(--sc-amber); outline-offset:2px; }
+    .sc-btn-primary{ background:var(--sc-amber); color:#fff; }
+    .sc-btn-primary:hover{ background:var(--sc-amber-deep); color:#fff; box-shadow:0 6px 16px rgba(200,121,44,.28); }
+    .sc-btn-ghost{ background:transparent; border-color:var(--sc-line); color:var(--sc-ink); }
+    .sc-btn-ghost:hover{ border-color:var(--sc-ink); }
+
+    .sc-card{ background:#fff; border:1px solid var(--sc-line); border-radius:12px; padding:2rem; border-left:3px solid var(--sc-amber); }
+    .sc-field{ margin-bottom:1.5rem; }
+    .sc-field label{ font-family:'Fraunces',serif; font-size:1.05rem; margin-bottom:.5rem; display:block; }
+    .sc-field .sc-hint{ font-size:.8rem; color:var(--sc-slate); margin-top:.4rem; }
+
+    .sc-panel textarea.form-control, .sc-panel input.form-control{
+        border:1px solid var(--sc-line); border-radius:8px; padding:.75rem .9rem; font-family:'Inter',sans-serif;
+        transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    .sc-panel textarea.form-control:focus, .sc-panel input.form-control:focus{
+        border-color:var(--sc-amber); box-shadow:0 0 0 3px rgba(200,121,44,.15); outline:none;
+    }
+    .sc-form-actions{ display:flex; gap:.75rem; margin-top:.5rem; }
+
+    @@media (max-width:576px){
+        .sc-header{ flex-direction:column; align-items:flex-start; gap:1rem; }
+    }
+</style>
+
+<main class="page-content">
+    <div class="sc-panel">
+        <div class="sc-header">
+            <div>
+                <span class="sc-eyebrow">Anasayfa / Slider Yönetimi</span>
+                <h1 class="sc-title">Yeni Slider</h1>
+                <p class="sc-subtitle">Anasayfa carousel'ine eklenecek yeni bir kayıt oluşturun.</p>
+            </div>
+            <a href="/Admin/SliderCarousel/SliderCarouselList" class="sc-btn sc-btn-ghost">
+                <i class="bi bi-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
+    
+        <div class="sc-card">
+            <form asp-action="Create" asp-controller="SliderCarousel" method="post">
+                <div class="sc-field">
+                    <label asp-for="Description">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"
+                              placeholder="Bu slider'ı tanımlayan kısa bir açıklama yazın..."></textarea>
+                    <p class="sc-hint">Bu açıklama yalnızca yönetim panelinde görünür, ziyaretçiye gösterilmez.</p>
+                </div>
+    
+                <div class="sc-form-actions">
+                    <button type="submit" class="sc-btn sc-btn-primary">
+                        <i class="bi bi-check-lg"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" asp-controller="SliderCarousel" class="sc-btn sc-btn-ghost">Vazgeç</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

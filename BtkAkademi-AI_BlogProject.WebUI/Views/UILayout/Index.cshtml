@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zxx">
+@await Component.InvokeAsync("_LayoutHeadComponentPartial")
+    
+<body>
+    @await Component.InvokeAsync("_LayoutRightSideBarComponentPartial")
+    
+    <div id="back__preloader">
+        <div id="back__circle_loader"></div>
+        <div class="back__loader_logo"><img src="~/template/assets/images/preload.png" alt="Preload"></div>
+    </div>
+
+    <header id="back-header" class="back-header">
+
+        @await Component.InvokeAsync("_LayoutHeaderTopBarComponentPartial")
+
+        @await Component.InvokeAsync("_LayoutHeaderNavBarComponentPartial")
+        
+    </header>
+
+    @RenderBody()
+
+    @await Component.InvokeAsync("_LayoutFooterComponentPartial")
+
+    @await Component.InvokeAsync("_LayoutScriptsComponentPartial")
+    
+</body>
+</html>

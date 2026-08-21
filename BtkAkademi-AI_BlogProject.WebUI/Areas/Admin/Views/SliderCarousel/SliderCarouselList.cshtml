@@ -1,0 +1,136 @@
+﻿@model List<ResultSliderCarouselDto>
+@{
+    ViewData["Title"] = "SliderCarouselList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    .sc-panel{
+        --sc-ink:#1B1D23; --sc-paper:#FBF9F6; --sc-slate:#6B7280; --sc-line:#E5E1D8;
+        --sc-amber:#C8792C; --sc-amber-deep:#9C5D1F;
+        --sc-moss:#4C7A5E; --sc-moss-deep:#375943;
+        --sc-brick:#B33F3F;
+        font-family:'Inter',sans-serif; color:var(--sc-ink);
+    }
+    .sc-panel .sc-eyebrow{
+        font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.12em;
+        text-transform:uppercase; color:var(--sc-amber); display:block; margin-bottom:.35rem;
+    }
+    .sc-panel .sc-title{ font-family:'Fraunces',serif; font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:0; }
+    .sc-panel .sc-subtitle{ color:var(--sc-slate); font-size:.95rem; margin-top:.25rem; }
+    .sc-panel .sc-header{
+        display:flex; justify-content:space-between; align-items:flex-end;
+        margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:1px solid var(--sc-line);
+    }
+    .sc-btn{
+        font-family:'Inter',sans-serif; font-weight:500; font-size:.9rem; border-radius:999px;
+        padding:.55rem 1.25rem; display:inline-flex; align-items:center; gap:.4rem;
+        border:1px solid transparent; text-decoration:none;
+        transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .sc-btn:hover{ transform:translateY(-1px); text-decoration:none; }
+    .sc-btn:focus-visible{ outline:2px solid var(--sc-amber); outline-offset:2px; }
+    .sc-btn-primary{ background:var(--sc-amber); color:#fff; }
+    .sc-btn-primary:hover{ background:var(--sc-amber-deep); color:#fff; box-shadow:0 6px 16px rgba(200,121,44,.28); }
+    .sc-btn-icon{
+        width:34px; height:34px; padding:0; justify-content:center; border-radius:50%;
+        border:1px solid var(--sc-line); background:#fff; color:var(--sc-slate);
+    }
+    .sc-btn-icon:hover{ border-color:var(--sc-ink); color:var(--sc-ink); box-shadow:0 4px 10px rgba(0,0,0,.08); }
+    .sc-btn-icon.sc-danger:hover{ border-color:var(--sc-brick); color:var(--sc-brick); }
+
+    .sc-reel{ position:relative; padding-left:3.25rem; }
+    .sc-reel::before{
+        content:""; position:absolute; left:1.55rem; top:.6rem; bottom:.6rem; width:1px;
+        background-image:linear-gradient(var(--sc-line) 60%, transparent 0%);
+        background-size:1px 10px; background-repeat:repeat-y;
+    }
+    .sc-frame{
+        position:relative; display:flex; align-items:center; gap:1.25rem;
+        background:#fff; border:1px solid var(--sc-line); border-radius:10px;
+        padding:1rem 1.25rem; margin-bottom:.85rem;
+        transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .sc-frame:hover{ box-shadow:0 10px 24px rgba(27,29,35,.08); transform:translateY(-2px); border-color:#DDD7C9; }
+    .sc-frame-badge{
+        position:absolute; left:-3.25rem; width:2.25rem; height:2.25rem; border-radius:8px;
+        background:var(--sc-ink); color:#F4EFE3; font-family:'IBM Plex Mono',monospace; font-size:.8rem;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .sc-frame-body{ flex:1; min-width:0; }
+    .sc-frame-desc{
+        font-family:'Fraunces',serif; font-size:1.05rem; font-weight:500; margin:0;
+        display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .sc-frame-meta{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--sc-slate); letter-spacing:.04em; }
+    .sc-frame-actions{ display:flex; gap:.5rem; flex-shrink:0; }
+
+    .sc-empty{ text-align:center; padding:3.5rem 1rem; border:1px dashed var(--sc-line); border-radius:12px; color:var(--sc-slate); }
+    .sc-empty .sc-empty-icon{ font-size:1.8rem; color:var(--sc-amber); margin-bottom:.75rem; }
+    .sc-empty .sc-empty-title{ font-family:'Fraunces',serif; font-size:1.15rem; color:var(--sc-ink); margin-bottom:.25rem; }
+
+    @@media (max-width:576px){
+        .sc-header{ flex-direction:column; align-items:flex-start; gap:1rem; }
+        .sc-reel{ padding-left:2.5rem; }
+        .sc-frame-badge{ left:-2.5rem; width:1.85rem; height:1.85rem; font-size:.7rem; }
+        .sc-frame{ flex-wrap:wrap; }
+    }
+</style>
+
+<main class="page-content">
+
+<div class="sc-panel">
+    <div class="sc-header">
+        <div>
+            <span class="sc-eyebrow">Anasayfa / Slider Yönetimi</span>
+            <h1 class="sc-title">Slider Carousel</h1>
+            <p class="sc-subtitle">Anasayfanın en üstünde dönen slider içeriklerini buradan yönetin.</p>
+        </div>
+        <a href="/Admin/SliderCarousel/CreateSliderCarousel" class="sc-btn sc-btn-primary">
+            <i class="bi bi-plus-lg"></i> Yeni Slider
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="sc-reel">
+            @{ int i = 0; }
+            @foreach (var item in Model)
+            {
+                i++;
+                <div class="sc-frame">
+                    <div class="sc-frame-badge">@i.ToString("00")</div>
+                    <div class="sc-frame-body">
+                        <p class="sc-frame-desc">@item.Description</p>
+                        <span class="sc-frame-meta">Kayıt No · @item.SliderCarouselId</span>
+                    </div>
+                    <div class="sc-frame-actions">
+                        <a href="/Admin/SliderCarousel/UpdateSliderCarousel/@item.SliderCarouselId"
+                           class="sc-btn sc-btn-icon" title="Düzenle">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="/Admin/SliderCarousel/DeleteSliderCarousel/@item.SliderCarouselId"
+                           class="sc-btn sc-btn-icon sc-danger" title="Sil"
+                           onclick="return confirm('Bu slider silinsin mi?');">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="sc-empty">
+            <div class="sc-empty-icon"><i class="bi bi-images"></i></div>
+            <p class="sc-empty-title">Henüz bir slider eklenmedi</p>
+            <p class="mb-3">Anasayfa boş görünüyor. İlk slider'ı ekleyerek başlayın.</p>
+            <a asp-action="Create" asp-controller="SliderCarousel" class="sc-btn sc-btn-primary">
+                <i class="bi bi-plus-lg"></i> İlk Slider'ı Oluştur
+            </a>
+        </div>
+    }
+</div>
+</main>

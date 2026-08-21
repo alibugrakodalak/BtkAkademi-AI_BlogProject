@@ -1,0 +1,33 @@
+﻿@model List<ResultTrendingStoriesArticleDto>
+
+<div class="back-trending-stories">
+    <div class="container">
+        <div class="back-title">
+            <h2>Popüler Yazılar</h2>
+        </div>
+        <ul class="back-trending-slider owl-carousel">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="image-areas">
+                        <a href="#"><img src="@item.FeaturedCoverImage600x600Url" alt="image"></a>
+                        <a href="#" class="back-cate back-tech">@item.CategoryName</a>
+                    </div>
+                    <div class="back-btm-content">
+                        <h3><a href="#">@item.Title</a></h3>
+                        <ul>
+                            <li class="back-author">@item.Name @item.Surname</li>
+                            <li class="back-date"><span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>@item.CreatedDate.ToString("dd-MMM-yyyy")</li>
+                        </ul>
+                    </div>
+                </li>
+            }            
+        </ul>
+    </div>
+</div>
+@* back-cate back-beauty
+back-cate back-tra 
+back-cate back-design
+back-cate back-poli
+back-cate back-tech
+*@

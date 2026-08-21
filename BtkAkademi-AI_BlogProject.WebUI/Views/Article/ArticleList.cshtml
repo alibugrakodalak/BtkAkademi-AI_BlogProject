@@ -1,0 +1,306 @@
+﻿@model List<ResultArticleDto>
+
+@{
+    ViewData["Title"] = "ArticleList";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+@functions {
+    public string GetCategoryClass(string category)
+    {
+        return category switch
+        {
+            "Teknoloji" => "cat-tech",
+            "Beyaz Eşya" => "cat-whitegoods",
+            "Kırtasiye" => "cat-stationery",
+            "Moda" => "cat-fashion",
+            "Kozmetik" => "cat-cosmetic",
+            "Otomotiv" => "cat-auto",
+            "Oyun & Oyuncak" => "cat-toy",
+            "Yeme İçme" => "cat-food",
+            "Yapı Market" => "cat-building",
+            "Politika" => "cat-politics",
+            "Seyahat" => "cat-travel",
+            "Futbol" => "cat-football",
+            "Siyaset" => "cat-government",
+            "Gelişim" => "cat-development",
+            _ => "cat-default"
+        };
+    }
+}
+
+
+<main class="page-content">
+    <div class="back-wrapper">
+
+        <div class="back-breadcrumbs">
+            <div class="breadcrumbs-wrap">
+                <div class="breadcrumbs-inner">
+                    <div class="container">
+                        <div class="breadcrumbs-text">
+                            <h1 class="breadcrumbs-title">Makale Listesi</h1>
+
+                            <div class="back-nav">
+                                <ul>
+                                    <li>
+                                        <a href="/Default/Index/">Ana Sayfa</a>
+                                    </li>
+                                    <li>Makale Listesi</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="back-category-style-grid pt-70 pb-70">
+            <div class="container">
+
+                <div class="row">
+
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4 d-flex">
+
+                            <div class="article-card">
+
+                                <div class="image-areas">
+
+                                    <a href="/Article/ArticleDetail/@item.ArticleId">
+
+                                        <img src="@item.CoverImage600x400Url"
+                                             alt="@item.Title">
+
+                                    </a>
+
+                                </div>
+
+                                <div class="back-btm-content d-flex flex-column">
+
+                                    <a href="#" class="back-cates @GetCategoryClass(item.CategoryName)">
+                                        @item.CategoryName
+                                    </a>
+
+                                    <h3>
+                                        <a href="/Article/ArticleDetail/@item.ArticleId">
+                                            @item.Title
+                                        </a>
+                                    </h3>
+
+                                    <ul>
+
+                                        <li class="back-author">
+                                            Yazar :
+                                            <a href="#">@item.Name @item.Surname</a>
+                                        </li>
+
+                                        <li class="back-date">
+
+                                            <span>
+
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="18"
+                                                     height="18"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     stroke-width="2"
+                                                     stroke-linecap="round"
+                                                     stroke-linejoin="round">
+
+                                                    <circle cx="12" cy="12" r="10"></circle>
+
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+
+                                                </svg>
+
+                                            </span>
+
+                                            @item.CreatedDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+
+                                        </li>
+
+                                    </ul>
+
+                                    <p class="mt-auto">
+                                        @(item.Content.Length > 120
+                                            ? item.Content.Substring(0, 120) + "..."
+                                            : item.Content)
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+
+                <!-- Pagination -->
+                <ul class="back-pagination mt-50">
+
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li>
+                            <a href="/Article/ArticleList?page=@(ViewBag.CurrentPage - 1)">
+                                Önceki
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="@(i == ViewBag.CurrentPage ? "active" : "")">
+
+                            <a href="/Article/ArticleList?page=@i">
+                                @i
+                            </a>
+
+                        </li>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li>
+
+                            <a href="/Article/ArticleList?page=@(ViewBag.CurrentPage + 1)">
+                                Sonraki
+                            </a>
+
+                        </li>
+                    }
+
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <style>
+
+/* Kategori Renkleri */
+.cat-tech{background:#2563EB;}
+.cat-whitegoods{background:#64748B;}
+.cat-stationery{background:#EA580C;}
+.cat-fashion{background:#DB2777;}
+.cat-cosmetic{background:#EC4899;}
+.cat-auto{background:#DC2626;}
+.cat-toy{background:#7C3AED;}
+.cat-food{background:#16A34A;}
+.cat-building{background:#92400E;}
+.cat-politics{background:#1E3A8A;}
+.cat-travel{background:#0EA5E9;}
+.cat-football{background:#15803D;}
+.cat-government{background:#7F1D1D;}
+.cat-development{background:#CA8A04;}
+
+/* Varsayılan */
+.cat-default{background:#475569;}
+
+            .article-card {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 25px rgba(0,0,0,.08);
+                transition: .35s;
+            }
+
+                .article-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 18px 40px rgba(0,0,0,.15);
+                }
+
+            .image-areas {
+                overflow: hidden;
+            }
+
+                .image-areas img {
+                    width: 100%;
+                    height: 240px;
+                    object-fit: cover;
+                    transition: .4s;
+                }
+
+            .article-card:hover img {
+                transform: scale(1.08);
+            }
+
+            .back-btm-content {
+                flex: 1;
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+            }
+
+                .back-btm-content h3 {
+                    margin-top: 12px;
+                    margin-bottom: 15px;
+                    min-height: 58px;
+                }
+
+                    .back-btm-content h3 a {
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: #222;
+                        font-size: 22px;
+                        line-height: 30px;
+                        font-weight: 700;
+                    }
+
+                .back-btm-content ul {
+                    margin: 0;
+                    padding: 0;
+                    list-style: none;
+                    display: flex;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    margin-bottom: 18px;
+                    font-size: 14px;
+                    color: #777;
+                }
+
+                .back-btm-content p {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    color: #666;
+                    line-height: 28px;
+                    margin-top: auto;
+                }
+
+            .back-cates{
+                    display:inline-block;
+                    color:#fff !important;
+                    padding:5px 14px;
+                    border-radius:20px;
+                    font-size:13px;
+                    text-decoration:none;
+                    text-align:center;
+                }
+
+            .back-pagination {
+                justify-content: center;
+            }
+
+                .back-pagination li.active a {
+                    background: #ff3d00;
+                    color: #fff;
+                    border-radius: 5px;
+                }
+
+    </style>
+</main>

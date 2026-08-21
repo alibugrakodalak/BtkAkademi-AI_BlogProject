@@ -1,0 +1,173 @@
+﻿@model GetArticleById
+
+@{
+    ViewData["Title"] = "Yeni Makale";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<style>
+    .article-form-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .article-header {
+        background: linear-gradient(135deg,#6f42c1,#8b5cf6);
+        color: white;
+        padding: 30px;
+    }
+
+    .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #6f42c1;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .modern-input {
+        height: 52px;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+        .modern-input:focus {
+            box-shadow: none;
+            border-color: #6f42c1;
+        }
+
+    .modern-textarea {
+        border-radius: 12px;
+        min-height: 300px;
+        resize: vertical;
+    }
+
+    .save-btn {
+        height: 52px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+        <div class="breadcrumb-title pe-3">Makaleler</div>
+        <div class="ps-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <i class="bx bx-home-alt"></i>
+                </li>
+                <li class="breadcrumb-item active">
+                    Yeni Makale
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card article-form-card">
+
+        <div class="article-header" style="background:linear-gradient(135deg,#ff9800,#ffb74d)">
+            <h3 class="mb-2">
+                <i class="bi bi-pencil-square me-2"></i>
+                Makale Düzenle
+            </h3>
+
+            <small>
+                Blog içeriklerinizi yayınlamadan önce tüm alanları doldurun.
+            </small>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form method="post">
+                <input type="hidden" asp-for="ArticleId" />
+
+                <div class="section-title">
+                    📝 Makale Bilgileri
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Makale Başlığı</label>
+                    <input asp-for="Title"
+                           class="form-control modern-input">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">İçerik</label>
+                    <textarea rows="10" asp-for="Content"
+                              class="form-control modern-textarea"></textarea>
+                </div>
+
+                <div class="section-title">
+                    🖼️ Görseller
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Kapak Görseli</label>
+                        <input asp-for="CoverImage600x400Url"
+                               class="form-control modern-input">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Ana Görsel</label>
+                        <input asp-for="MainImage1200x600Url"
+                               class="form-control modern-input">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Slider Görseli</label>
+                        <input asp-for="FeatureSliderImage800x800Url"
+                               class="form-control modern-input">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Feature Görseli</label>
+                        <input asp-for="FeatureImage1200x675Url"
+                               class="form-control modern-input">
+                    </div>
+
+                </div>
+
+                <div class="section-title">
+                    👤 Yayın Bilgileri
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>Kategori</label>
+                        <select asp-for="CategoryId"
+                                asp-items="(IEnumerable<SelectListItem>)ViewBag.CategoryValues"
+                                class="form-select modern-input">
+                            <option value="">
+                                Kategori Seçiniz
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Yazar Id</label>
+                        <input asp-for="AppUserId"
+                               class="form-control modern-input">
+                    </div>
+
+                </div>
+
+                <button class="btn btn-warning text-white save-btn w-100 mt-3">
+                    <i class="bi bi-arrow-repeat me-2"></i>
+                    Değişiklikleri Kaydet
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>

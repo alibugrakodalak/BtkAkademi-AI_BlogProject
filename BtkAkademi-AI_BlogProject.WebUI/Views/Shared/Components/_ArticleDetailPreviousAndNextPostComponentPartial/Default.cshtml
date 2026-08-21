@@ -1,0 +1,44 @@
+﻿@using BtkAkademi_AI_BlogProject.WebUI.DTO_s.ArticleDtos
+@{
+    var nextPost = ViewBag.NextPost as GetArticleById;
+    var prevPost = ViewBag.PrevPost as GetArticleById;
+}
+
+<div class="single-nav">
+    <div class="back-prev">
+        @if (prevPost != null)
+        {
+            <a asp-controller="Article" asp-action="ArticleDetail" asp-route-id="@prevPost.ArticleId" title="@prevPost.Title">
+                <i class="fa-solid fa-arrow-left"></i> Önceki Gönderi
+                <em class="nav-post-title">@prevPost.Title</em>
+            </a>
+        }
+    </div>
+
+    <div class="back-next">
+        @if (nextPost != null)
+        {
+            <a asp-controller="Article" asp-action="ArticleDetail" asp-route-id="@nextPost.ArticleId" title="@nextPost.Title">
+                Sıradaki Gönderi <i class="fa-solid fa-arrow-right"></i>
+                <em class="nav-post-title">@nextPost.Title</em>
+            </a>
+        }
+    </div>
+</div>
+
+<style>
+    .nav-post-title {
+        display: inline-block;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: bottom;
+    }
+
+    @@media (max-width: 576px) {
+        .nav-post-title {
+            max-width: 120px;
+        }
+    }
+</style>

@@ -1,0 +1,24 @@
+﻿
+Daha fazlasını gör (Ana Sayfada Kategoriler Altında) alanında 6 farklı kategoride eklenen sondan 1 önceki yazıyı getir view tarafında
+
+
+MAKALELER İÇİN TAGLAR (YENİ TABLO OLUŞTURUP BAĞLAMALISIN)
+
+Sitede İlgili makaleler'e göre filtre yapılması
+Kategori bazında tıklanınca sadece o kategoriye ait makalelerin gelmesi 
+
+Blog detaylarında yorum yapabilme
+Blog detaylarında sosyal medya
+
+Site footerda bulunan linkler ile ilgili çalışma
+
+
+ADMİN PANEL
+ sidebar
+ navbar
+ navbar bildirimler
+ mesaj detaylarına AI ile mesaj içeriğini analiz etmek
+ Yorum Listesi ama makale bazında pop up çıkar yorumları gör
+
+
+Makaleler girilmesi

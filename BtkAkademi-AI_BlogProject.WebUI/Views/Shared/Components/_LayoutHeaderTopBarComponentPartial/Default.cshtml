@@ -1,0 +1,35 @@
+﻿@model List<ResultSliderCarouselDto>
+
+<div class="toolbar-area hidden-md">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <div class="toolbar-text">
+                    <div class="latest-news-title">SON YAZILAR</div>
+                    <div class="latest-news">
+                        <div class="back-topbar-slider owl-carousel">
+                            @foreach (var item in Model)
+                            {
+                                <div>@item.Description</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="toolbar-content">
+                    <div class="toolbar-sl-share">
+                        <ul>
+                            <li class="back-follow">Bizi Takip Edin</li>
+                            <li><a href="www.facebook.com"><i class="fa-brands fa-facebook-f"></i></a></li>
+                            <li><a href="www.x.com"><i class="fa-brands fa-twitter"></i></a></li>
+                            <li><a href="www.instagram.com"><i class="fa-brands fa-instagram"></i></a></li>
+                            <li><a href="www.linkedin.com"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                            <li><a href="www.youtube.com"><i class="fa-brands fa-youtube"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

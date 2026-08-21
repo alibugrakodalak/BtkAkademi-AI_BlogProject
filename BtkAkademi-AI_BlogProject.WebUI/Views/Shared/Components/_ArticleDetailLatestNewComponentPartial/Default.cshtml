@@ -1,0 +1,28 @@
+﻿@model List<ResultLast4ArticleWithCategoryDto>
+
+<div class="back-title back-small-title pt-30">
+    <h2>Son Çıkanlar</h2>
+</div>
+<ul class="back-hero-bottom">
+    @foreach (var item in Model)
+    {
+        <li>
+            <div class="image-areas">
+                <a href="#"><img src="@item.Image300x300Url" alt="image"></a>
+            </div>
+            <div class="back-btm-content">
+                <a href="#" class="back-cates">@item.CategoryName</a>
+                <h3>
+                    <a href="#">
+                        @(item.Title.Length > 25
+            ? item.Title.Substring(0, 25) + "..."
+            : item.Title)
+                    </a>
+                </h3>
+                <ul>
+                    <li class="back-date">@item.Name @item.Surname</li>
+                </ul>
+            </div>
+        </li>
+    }
+</ul>

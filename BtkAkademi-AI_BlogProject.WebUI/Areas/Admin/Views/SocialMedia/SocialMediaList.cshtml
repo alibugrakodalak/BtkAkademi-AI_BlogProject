@@ -1,0 +1,313 @@
+﻿@model List<ResultSocialMediaDto>
+
+@{
+    ViewData["Title"] = "SocialMediaList";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+
+    string GetPlatformKey(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return "default";
+        url = url.ToLowerInvariant();
+        if (url.Contains("instagram")) return "instagram";
+        if (url.Contains("facebook")) return "facebook";
+        if (url.Contains("twitter") || url.Contains("x.com")) return "x";
+        if (url.Contains("youtube")) return "youtube";
+        if (url.Contains("linkedin")) return "linkedin";
+        if (url.Contains("tiktok")) return "tiktok";
+        if (url.Contains("pinterest")) return "pinterest";
+        if (url.Contains("whatsapp")) return "whatsapp";
+        return "default";
+    }
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+<main class="page-content">
+
+<div class="smx-wrap">
+
+    <div class="smx-header">
+        <div>
+            <h1 class="smx-title">Sosyal Medya Hesapları</h1>
+            <p class="smx-subtitle">Sitenizde görünen sosyal medya bağlantılarını buradan yönetin.</p>
+        </div>
+        <div class="smx-header-actions">
+            <span class="smx-count">@((Model?.Count ?? 0)) hesap</span>
+            <a href="@Url.Action("CreateSocialMedia", "SocialMedia")" class="smx-btn smx-btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                Yeni Ekle
+            </a>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="smx-empty">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <h3>Henüz sosyal medya hesabı eklenmemiş</h3>
+            <p>Sitenizde göstermek istediğiniz ilk hesabı ekleyerek başlayın.</p>
+            <a href="@Url.Action("CreateSocialMedia", "SocialMedia")" class="smx-btn smx-btn-primary">Hesap Ekle</a>
+        </div>
+    }
+    else
+    {
+        <div class="smx-grid">
+            @foreach (var item in Model)
+            {
+                var platform = GetPlatformKey(item.SocialMediaLink);
+                <div class="smx-card platform-@platform">
+                    <span class="smx-topbar"></span>
+                    <div class="smx-media">
+                        <img src="@item.ImageUrl400x300" alt="Sosyal medya görseli" loading="lazy"
+                             onerror="this.onerror=null;this.src='/images/placeholder-400x300.png';" />
+                        <span class="smx-icon-badge">
+                            <i class="@item.IconUrl"></i>
+                        </span>
+                    </div>
+                    <div class="smx-body">
+                        <a class="smx-link" href="@item.SocialMediaLink" target="_blank" rel="noopener noreferrer" title="@item.SocialMediaLink">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="smx-link-ic"><path d="M14 5h5v5M19 5l-8 8M9 5H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            <span>@item.SocialMediaLink</span>
+                        </a>
+
+                        <div class="smx-actions">
+                            <button type="button" class="smx-icon-btn" title="Bağlantıyı kopyala" onclick="smxCopyLink(this)" data-link="@item.SocialMediaLink">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.8"/></svg>
+                            </button>
+                            <a class="smx-icon-btn" title="Düzenle" href="@Url.Action("UpdateSocialMedia", "SocialMedia", new { id = item.SocialMediaId })">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                            </a>
+                            <button type="button" class="smx-icon-btn smx-icon-btn-danger" title="Sil" onclick="smxConfirmDelete(@item.SocialMediaId)">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+</main>
+
+<form id="smxDeleteForm" asp-action="Delete" asp-controller="SocialMedia" method="post" style="display:none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="smxDeleteId" />
+</form>
+
+<style>
+    .smx-wrap{
+        --smx-canvas:#f3f4f7;
+        --smx-surface:#ffffff;
+        --smx-ink:#16181f;
+        --smx-muted:#6c7280;
+        --smx-line:#e6e8ee;
+        --smx-accent:#3457d5;
+        --smx-accent-warm:#ff6b4a;
+        font-family:'Inter',system-ui,sans-serif;
+        color:var(--smx-ink);
+        padding:28px 4px 40px;
+    }
+    .smx-wrap *{ box-sizing:border-box; }
+
+    .smx-header{
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:16px;
+        flex-wrap:wrap;
+        margin-bottom:26px;
+    }
+    .smx-title{
+        font-family:'Sora',sans-serif;
+        font-weight:800;
+        font-size:26px;
+        letter-spacing:-0.02em;
+        margin:0 0 6px;
+        color:var(--smx-ink);
+    }
+    .smx-subtitle{ margin:0; color:var(--smx-muted); font-size:14px; }
+
+    .smx-header-actions{ display:flex; align-items:center; gap:14px; }
+    .smx-count{
+        font-family:'JetBrains Mono',monospace;
+        font-size:12px;
+        color:var(--smx-muted);
+        background:var(--smx-surface);
+        border:1px solid var(--smx-line);
+        padding:6px 12px;
+        border-radius:999px;
+    }
+    .smx-btn{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        border:none;
+        cursor:pointer;
+        text-decoration:none;
+        font-family:'Inter',sans-serif;
+        font-weight:600;
+        font-size:14px;
+        padding:10px 18px;
+        border-radius:10px;
+        transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .smx-btn-primary{
+        background:var(--smx-ink);
+        color:#fff;
+        box-shadow:0 1px 2px rgba(20,22,31,.15);
+    }
+    .smx-btn-primary:hover{ background:var(--smx-accent); transform:translateY(-1px); color:#fff; }
+    .smx-btn-primary:focus-visible{ outline:2px solid var(--smx-accent); outline-offset:2px; }
+
+    .smx-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(272px, 1fr));
+        gap:22px;
+    }
+
+    .smx-card{
+        position:relative;
+        background:var(--smx-surface);
+        border:1px solid var(--smx-line);
+        border-radius:16px;
+        overflow:hidden;
+        transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .smx-card:hover{
+        transform:translateY(-4px);
+        box-shadow:0 16px 30px -18px rgba(20,22,31,.35);
+    }
+
+    .smx-card.platform-instagram{ --smx-accent:#dd2a7b; --smx-accent-2:#f58529; }
+    .smx-card.platform-facebook { --smx-accent:#1877f2; --smx-accent-2:#1877f2; }
+    .smx-card.platform-x        { --smx-accent:#111318; --smx-accent-2:#3a3f4b; }
+    .smx-card.platform-youtube  { --smx-accent:#ff0000; --smx-accent-2:#ff0000; }
+    .smx-card.platform-linkedin { --smx-accent:#0a66c2; --smx-accent-2:#0a66c2; }
+    .smx-card.platform-tiktok   { --smx-accent:#000000; --smx-accent-2:#25f4ee; }
+    .smx-card.platform-pinterest{ --smx-accent:#e60023; --smx-accent-2:#e60023; }
+    .smx-card.platform-whatsapp { --smx-accent:#25d366; --smx-accent-2:#25d366; }
+    .smx-card.platform-default  { --smx-accent:#3457d5; --smx-accent-2:#3457d5; }
+
+    .smx-topbar{
+        display:block;
+        height:3px;
+        background:linear-gradient(90deg, var(--smx-accent), var(--smx-accent-2));
+    }
+
+    .smx-media{
+        position:relative;
+        width:100%;
+        aspect-ratio:4/3;
+        background:var(--smx-canvas);
+        overflow:hidden;
+    }
+    .smx-media img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        display:block;
+        transition:transform .35s ease;
+    }
+    .smx-card:hover .smx-media img{ transform:scale(1.04); }
+
+    .smx-icon-badge{
+        position:absolute;
+        left:14px;
+        bottom:-16px;
+        width:40px;
+        height:40px;
+        border-radius:50%;
+        background:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow:0 0 0 3px #fff, 0 0 0 5px var(--smx-accent), 0 6px 12px -4px rgba(20,22,31,.35);
+        overflow:hidden;
+    }
+    .smx-icon-badge img{ width:22px; height:22px; object-fit:contain; }
+    .smx-icon-badge i{ font-size:17px; color:var(--smx-accent); line-height:1; }
+
+    .smx-body{ padding:24px 16px 16px; }
+
+    .smx-link{
+        display:flex;
+        align-items:center;
+        gap:6px;
+        font-family:'JetBrains Mono',monospace;
+        font-size:12.5px;
+        color:var(--smx-ink);
+        text-decoration:none;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        padding-bottom:14px;
+        border-bottom:1px dashed var(--smx-line);
+        margin-bottom:12px;
+    }
+    .smx-link span{ overflow:hidden; text-overflow:ellipsis; }
+    .smx-link-ic{ flex:none; color:var(--smx-muted); }
+    .smx-link:hover{ color:var(--smx-accent); }
+    .smx-link:hover .smx-link-ic{ color:var(--smx-accent); }
+
+    .smx-actions{ display:flex; align-items:center; gap:8px; }
+    .smx-icon-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:32px;
+        height:32px;
+        border-radius:9px;
+        border:1px solid var(--smx-line);
+        background:#fff;
+        color:var(--smx-muted);
+        cursor:pointer;
+        text-decoration:none;
+        transition:background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .smx-icon-btn:hover{ background:var(--smx-canvas); color:var(--smx-ink); }
+    .smx-icon-btn:focus-visible{ outline:2px solid var(--smx-accent); outline-offset:2px; }
+    .smx-icon-btn-danger:hover{ background:#fdeceb; color:#d92d20; border-color:#f6c6c1; }
+    .smx-icon-btn:last-child{ margin-left:auto; }
+
+    .smx-empty{
+        text-align:center;
+        padding:64px 20px;
+        border:1.5px dashed var(--smx-line);
+        border-radius:16px;
+        color:var(--smx-muted);
+    }
+    .smx-empty svg{ color:var(--smx-muted); margin-bottom:12px; }
+    .smx-empty h3{ font-family:'Sora',sans-serif; color:var(--smx-ink); margin:0 0 6px; font-size:17px; }
+    .smx-empty p{ margin:0 0 18px; font-size:14px; }
+
+    @@media (prefers-reduced-motion: reduce){
+        .smx-card, .smx-media img, .smx-btn{ transition:none; }
+    }
+
+    @@media (max-width:520px){
+        .smx-header{ align-items:flex-start; }
+        .smx-grid{ grid-template-columns:1fr; }
+    }
+</style>
+
+<script>
+    function smxCopyLink(btn) {
+        const link = btn.getAttribute('data-link');
+        navigator.clipboard.writeText(link).then(function () {
+            const original = btn.innerHTML;
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            setTimeout(function () { btn.innerHTML = original; }, 1200);
+        });
+    }
+
+    function smxConfirmDelete(id) {
+        if (confirm('Bu sosyal medya hesabını silmek istediğinize emin misiniz?')) {
+            document.getElementById('smxDeleteId').value = id;
+            document.getElementById('smxDeleteForm').submit();
+        }
+    }
+</script>

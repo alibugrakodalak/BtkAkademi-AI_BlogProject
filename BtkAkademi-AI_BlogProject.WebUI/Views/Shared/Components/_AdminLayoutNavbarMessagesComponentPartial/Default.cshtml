@@ -1,0 +1,48 @@
+﻿@model List<ResultMessageDto>
+
+<li class="nav-item dropdown dropdown-large">
+    <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
+        <div class="messages">
+            <span class="notify-badge">@Model.Count</span>
+            <i class="bi bi-messenger"></i>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end p-0">
+        <div class="p-2 border-bottom m-2">
+            <h5 class="h5 mb-0">Okunmamış Mesajlar</h5>
+        </div>
+
+        <div class="header-message-list p-2">
+            <div class="dropdown-item bg-light radius-10 mb-1">
+                <form class="dropdown-searchbar position-relative">
+                    <div class="position-absolute top-50 start-0 translate-middle-y px-3 search-icon"><i class="bi bi-search"></i></div>
+                    <input class="form-control" type="search" placeholder="Search Messages">
+                </form>
+            </div>
+
+            @foreach(var item in Model)
+            {
+                <a class="dropdown-item" href="#">
+                    <div class="d-flex align-items-center">
+                        <div class="notification-box"><i class="bi bi-people-fill"></i></div>
+                        <div class="ms-3 flex-grow-1">
+                            <h6 class="mb-0 dropdown-msg-user">@item.Name @item.Surname <span class="msg-time float-end text-secondary">@item.SendDate.ToString("HH-mm")</span></h6>
+                            <small class="mb-0 dropdown-msg-text text-secondary d-flex align-items-center">
+                                @(item.MessageDetail?.Length > 30
+                                    ? item.MessageDetail.Substring(0, 30) + "..."
+                                    : item.MessageDetail)
+                            </small>
+                        </div>
+                    </div>
+                </a>
+            }            
+        </div>
+
+        <div class="p-2">
+            <div><hr class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/Admin/Message/MessageList">
+                <div class="text-center">Tümünü Gör</div>
+            </a>
+        </div>
+    </div>
+</li>

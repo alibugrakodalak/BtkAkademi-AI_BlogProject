@@ -1,0 +1,360 @@
+﻿@model List<ResultArticleDto>
+
+@{
+    ViewData["Title"] = "Makale Listesi";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<style>
+    .article-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .card-header-custom {
+        background: #fff;
+        border-bottom: 1px solid #edf2f7;
+        padding: 25px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #344767;
+    }
+
+    .stat-badge {
+        background: #eef4ff;
+        color: #0d6efd;
+        padding: 8px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box i {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-box input {
+            height: 48px;
+            border-radius: 12px;
+            padding-left: 45px;
+            border: 1px solid #dee2e6;
+        }
+
+            .search-box input:focus {
+                box-shadow: none;
+                border-color: #0d6efd;
+            }
+
+    .modern-table thead {
+        background: #f8fafc;
+    }
+
+        .modern-table thead th {
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 18px;
+            white-space: nowrap;
+        }
+
+    .modern-table tbody td {
+        padding: 18px;
+        border-color: #edf2f7;
+        vertical-align: middle;
+    }
+
+    .modern-table tbody tr {
+        transition: all .25s ease;
+    }
+
+        .modern-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .article-id {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .article-title {
+        font-weight: 600;
+        color: #344767;
+        max-width: 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .Category-badge {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .author-badge {
+        background: #fff3e0;
+        color: #ef6c00;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .date-text {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all .25s;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-view {
+        background: rgba(13,110,253,.12);
+        color: #0d6efd;
+    }
+
+    .btn-edit {
+        background: rgba(255,193,7,.18);
+        color: #ff9800;
+    }
+
+    .btn-delete {
+        background: rgba(220,53,69,.12);
+        color: #dc3545;
+    }
+
+    /* FeatureSlider aktif/pasif toggle butonu */
+    .toggle-slider-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all .25s;
+        border: 1px solid transparent;
+    }
+
+        .toggle-slider-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .toggle-slider-btn i {
+            font-size: 15px;
+        }
+
+        /* Şu an aktif -> tıklanınca pasif yapılacak, uyarı rengi */
+        .toggle-slider-btn.is-active {
+            background: rgba(220,53,69,.12);
+            color: #dc3545;
+        }
+
+        /* Şu an pasif -> tıklanınca aktif yapılacak, olumlu renk */
+        .toggle-slider-btn.is-passive {
+            background: rgba(46,125,50,.12);
+            color: #2e7d32;
+        }
+</style>
+
+<main class="page-content">
+
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
+        <div class="breadcrumb-title pe-3 fw-bold">
+            Makaleler
+        </div>
+
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="bx bx-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        Makale Listesi
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="ms-auto">
+            <a href="/AdminArticle/CreateArticle/" class="btn btn-primary px-4">
+                <i class="bi bi-plus-circle me-2"></i>
+                Yeni Makale
+            </a>
+        </div>
+    </div>
+
+    <div class="card article-card">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table modern-table mb-0" id="articleTable">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Başlık</th>
+                            <th>Tarih</th>
+                            <th>Kategori</th>
+                            <th>Yazar</th>
+                            <th>FeatureSlider</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            count++;
+                            <tr>
+
+                                <td>
+                                    <span class="article-id">
+                                        #@count
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="article-title"
+                                         title="@item.Title">
+                                        @item.Title
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="date-text">
+                                        @item.CreatedDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="Category-badge">
+                                        @item.CategoryName
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="author-badge">
+                                        <i class="bi bi-person-circle me-1"></i>
+                                        @item.Name @item.Surname
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (item.IsFeatureSlider)
+                                    {
+                                        <a href="/AdminArticle/ChangeArticleIsFeatureSliderFromTrueToFalse/@item.ArticleId"
+                                               class="toggle-slider-btn is-active">
+                                            <i class="bi bi-toggle2-on"></i>
+                                            Pasif Yap
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/AdminArticle/ChangeArticleIsFeatureSliderFromFalseToTrue/@item.ArticleId"
+                                               class="toggle-slider-btn is-passive">
+                                            <i class="bi bi-toggle2-off"></i>
+                                            Aktif Yap
+                                        </a>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a href="#"
+                                               class="action-btn btn-view"
+                                               data-bs-toggle="tooltip"
+                                               title="Sitede Gör">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+
+                                        <a href="/AdminArticle/UpdateArticle/@item.ArticleId"
+                                               class="action-btn btn-edit"
+                                               data-bs-toggle="tooltip"
+                                               title="Düzenle">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+
+                                        <a href="/AdminArticle/RemoveArticle/@item.ArticleId"
+                                               class="action-btn btn-delete"
+                                               data-bs-toggle="tooltip"
+                                               title="Sil">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script>
+    document.getElementById("searchInput")
+        .addEventListener("keyup", function () {
+
+            let value = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#articleTable tbody tr");
+
+            rows.forEach(function (row) {
+
+                let text = row.innerText.toLowerCase();
+
+                row.style.display =
+                    text.includes(value) ? "" : "none";
+            });
+        });
+</script>
