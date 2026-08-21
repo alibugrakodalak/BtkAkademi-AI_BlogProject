@@ -304,29 +304,6 @@ dotnet ef database update
 }
 ```
 
-ElevenLabs, Tavily ve Gemini anahtarlarını ilgili controller dosyalarındaki `const` değişkenlere girin.
-
-### 5. Projeleri Çalıştırın
-
-```bash
-# Terminal 1 - WebApi
-cd BtkAkademi-AI_BlogProject.WebApi
-dotnet run
-
-# Terminal 2 - WebUI
-cd BtkAkademi-AI_BlogProject.WebUI
-dotnet run
-```
-
-Visual Studio kullanıyorsanız: **Properties → Multiple Startup Projects** ayarlayın, her iki projeyi `Start` olarak işaretleyin.
-
-### 6. Swagger UI
-
-```
-https://localhost:7003/swagger
-```
-
----
 
 ## 📁 Proje Yapısı — Detaylı
 
@@ -376,49 +353,3 @@ https://localhost:7003/swagger
 | `SubFeatureComponents` | Alt özellik bölümü |
 | `SecondSubFeatureComponents` | İkinci alt özellik bölümü |
 | `TradingVideoComponents` | Video bölümü bileşenleri |
-
----
-
-## ⚠️ Güvenlik Notları
-
-> **Önemli:** Proje geliştirme aşamasında olduğundan bazı API anahtarları kaynak kodunda yer alabilir.
-> Production ortamına taşımadan önce mutlaka yapın:
->
-> - Tüm API anahtarlarını `appsettings.json` veya **User Secrets** / **Environment Variables**'a taşıyın
-> - Kaynak kodunda hardcode edilmiş anahtarları kaldırın
-> - Identity yetkilendirme middleware'ini tüm admin rotalarına uygulayın
-> - HTTPS yönlendirmesinin aktif olduğunu doğrulayın
-
----
-
-## 🗺️ Yol Haritası
-
-- [ ] JWT tabanlı API kimlik doğrulama
-- [ ] Admin paneli için rol bazlı yetkilendirme
-- [ ] Görsel yükleme optimizasyonu (CDN desteği)
-- [ ] Full-text makale arama
-- [ ] Makale etiketleme sistemi
-- [ ] Dark/Light tema geçişi
-- [ ] Docker Compose yapılandırması
-
----
-
-## 🤝 Katkı
-
-Katkılar her zaman hoş karşılanır! Önce bir **Issue** açın, ardından **Pull Request** gönderin.
-
-1. Fork edin
-2. Feature branch oluşturun: `git checkout -b feature/amazing-feature`
-3. Commit edin: `git commit -m 'feat: amazing feature eklendi'`
-4. Push edin: `git push origin feature/amazing-feature`
-5. Pull Request açın
-
----
-
-## 📄 Lisans
-
-Bu proje **MIT Lisansı** ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
-
----
-
-*BTK Akademi Eğitimi Kapsamında Geliştirilmiştir — Yapay Zeka · .NET · Web Geliştirme*
